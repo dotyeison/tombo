@@ -1,14 +1,16 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { StackParamList } from './Stack.typeDefs';
-import { DrawerProps } from '../drawer/Drawer.typeDefs';
+import { StackParamList } from './Stack.types';
+import { DrawerProps } from '../drawer/Drawer.types';
 import { StackHeaderLeft, StackHeaderTitle } from './components';
 import { colors } from '@theme';
 
 // views
-import Home from '@views/Home';
+import Map from '@views/HomeMap';
+import Alerts from '@views/Alerts';
+import Reports from '@views/Reports';
+
 import Details from '@views/Details';
-import Profile from '@views/Profile';
 
 const Stack = createNativeStackNavigator<StackParamList>();
 
@@ -18,14 +20,31 @@ const navigationProps = {
   headerTitleStyle: { fontSize: 18 },
 };
 
-export function HomeStackNavigator({ navigation }: DrawerProps) {
+export function MapStackNavigator({ navigation }: DrawerProps) {
   return (
     <Stack.Navigator screenOptions={navigationProps}>
       <Stack.Screen
-        component={Home}
-        name="HomeStack"
+        component={Map}
+        name="MapStack"
         options={{
-          title: 'Home',
+          title: 'Map',
+          headerTitle: () => <StackHeaderTitle />,
+          headerLeft: () => <StackHeaderLeft onPress={() => navigation.toggleDrawer()} />,
+          headerTitleAlign: 'center',
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
+
+export function AlertsStackNavigator({ navigation }: DrawerProps) {
+  return (
+    <Stack.Navigator screenOptions={navigationProps}>
+      <Stack.Screen
+        component={Alerts}
+        name="AlertsStack"
+        options={{
+          title: 'Alerts',
           headerTitle: () => <StackHeaderTitle />,
           headerLeft: () => <StackHeaderLeft onPress={() => navigation.toggleDrawer()} />,
           headerTitleAlign: 'center',
@@ -44,14 +63,14 @@ export function HomeStackNavigator({ navigation }: DrawerProps) {
   );
 }
 
-export function ProfileStackNavigator({ navigation }: DrawerProps) {
+export function ReportsStackNavigator({ navigation }: DrawerProps) {
   return (
     <Stack.Navigator screenOptions={navigationProps}>
       <Stack.Screen
-        component={Profile}
-        name="ProfileStack"
+        component={Reports}
+        name="ReportsStack"
         options={{
-          title: 'Profile',
+          title: 'Reportes',
           headerTitle: () => <StackHeaderTitle />,
           headerLeft: () => <StackHeaderLeft onPress={() => navigation.toggleDrawer()} />,
           headerTitleAlign: 'center',

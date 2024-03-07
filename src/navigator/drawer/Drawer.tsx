@@ -2,7 +2,7 @@ import React from 'react';
 import { SafeAreaView, Text, View, StyleSheet } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import TabNavigator from '@navigator/tab/Tab';
-import { DrawerParamList } from './Drawer.typeDefs';
+import { DrawerParamList } from './Drawer.types';
 
 const Drawer = createDrawerNavigator<DrawerParamList>();
 

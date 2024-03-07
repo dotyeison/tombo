@@ -10,6 +10,7 @@ const styles = StyleSheet.create({
   },
 });
 
+// Just shows the app logo in the header of the stack navigator
 export function StackHeaderTitle() {
   return <Image source={images.logo} style={styles.logo} />;
 }

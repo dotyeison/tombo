@@ -7,8 +7,9 @@ export type TabBarStatus = {
 };
 
 export type TabParamList = {
-  HomeTab: undefined;
-  ProfileTab: undefined;
+  MapTab: undefined;
+  AlertsTab: undefined;
+  ReportTab: undefined;
   // add more tab params...
 };
 

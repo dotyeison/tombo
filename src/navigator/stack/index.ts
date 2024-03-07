@@ -1,2 +1,2 @@
-export * from './Stack.typeDefs';
+export * from './Stack.types';
 export * from './Stack';

@@ -1,2 +1,2 @@
-export * from './Drawer.typeDefs';
+export * from './Drawer.types';
 export { default } from './Drawer';

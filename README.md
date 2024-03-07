@@ -34,7 +34,7 @@ tombo/src
 │   │             # Each tab have a 'stack' of different screens it can support.
 │   │
 │   └── stack     # Here is where the screens stacks are defined for each tab.
-│                 # We currently have three tabs: Home, Search, and Profile.
+│                 # We currently have three tabs: HomeMap, Alerts and Reports.
 │
 ├── states        # The different *reactive* states of the app are defined here,
 │   │             # along with the actions that can be performed on them.
