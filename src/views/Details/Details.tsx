@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
 });
 
 export default function Details({ navigation, route }: StackProps) {
-  const { from } = route.params;
+  const from = route.params?.from;
 
   return (
     <View style={styles.root}>

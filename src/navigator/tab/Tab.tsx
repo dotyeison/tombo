@@ -28,10 +28,14 @@ export default function TabNavigator() {
         tabBarActiveTintColor: colors.lightPurple,
         tabBarActiveBackgroundColor: colors.white,
       })}>
-      <Tab.Screen name="HomeTab" component={HomeStackNavigator} options={{ title: 'Home' }} />
+      <Tab.Screen
+        name="HomeTab"
+        component={HomeStackNavigator as any}
+        options={{ title: 'Home' }}
+      />
       <Tab.Screen
         name="ProfileTab"
-        component={ProfileStackNavigator}
+        component={ProfileStackNavigator as any}
         options={{ title: 'Profile' }}
       />
     </Tab.Navigator>
