@@ -6,6 +6,7 @@ import { IUser } from '@states/app/app.state.types';
 import DrawerNavigator from './drawer';
 import { loadImages, loadFonts } from '@theme';
 import { useDataPersist, DataPersistKeys } from '@hooks';
+import pocketbase from 'src/services/pocketbase';
 
 import * as Location from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
@@ -22,7 +23,8 @@ interface TaskManagerArgs {
 SplashScreen.preventAutoHideAsync();
 
 function Navigator() {
-  const { dispatch, isUserChecked, setUser, setLoggedIn, setCurrentLocation } = useAppState();
+  const { dispatch, isUserChecked, setUser, setLoggedIn, setCurrentLocation, setEventTypes } =
+    useAppState();
   const { getPersistData } = useDataPersist();
 
   /**
@@ -62,6 +64,13 @@ function Navigator() {
             }),
           );
         },
+      );
+
+      const rawEventTypes = await pocketbase.getEventTypes();
+      dispatch(
+        setEventTypes(
+          rawEventTypes.items.reduce((acc, item) => ({ ...acc, [item.name]: item.id }), {}),
+        ),
       );
 
       // check if we have user in cache
