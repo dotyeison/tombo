@@ -4,6 +4,7 @@ import Button from '@components/Button';
 import { StackProps } from '@navigator/stack';
 import { colors } from '@theme';
 import { windowWidth } from '@utils/deviceInfo';
+import MapView, { Marker } from 'react-native-maps';
 
 const styles = StyleSheet.create({
   root: {
@@ -30,6 +31,10 @@ const styles = StyleSheet.create({
     height: 44,
     width: '50%',
   },
+  map: {
+    width: '100%',
+    height: '100%',
+  },
 });
 
 export default function Home({ navigation }: StackProps) {
@@ -37,12 +42,16 @@ export default function Home({ navigation }: StackProps) {
     <View style={styles.root}>
       <StatusBar barStyle="light-content" />
       <Text style={styles.title}>Home</Text>
-      <Button
-        title="Go to Details"
-        titleStyle={styles.buttonTitle}
-        style={styles.button}
-        onPress={() => navigation.navigate('DetailsStack', { from: 'Home' })}
-      />
+      <MapView style={styles.map}>
+        <Marker
+          description="Delivery person 1"
+          coordinate={{
+            latitude: -12.0624831,
+            longitude: -76.9901451,
+          }}
+          image={require('@assets/images/gun.png')}
+        />
+      </MapView>
     </View>
   );
 }
