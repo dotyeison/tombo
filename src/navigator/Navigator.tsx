@@ -1,14 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import * as SplashScreen from 'expo-splash-screen';
 import { useAppSlice, useAppService, IUser } from '@modules/app';
-import BottomSheet from '@components/BottomSheet';
-import { WelcomeBottomSheetContents } from '@layouts/BottomSheetContents';
 import DrawerNavigator from './drawer';
 import { loadImages, loadFonts } from '@theme';
 import { useDataPersist, DataPersistKeys } from '@hooks';
-import { isWeb } from '@utils/deviceInfo';
 
 // keep the splash screen visible while complete fetching resources
 SplashScreen.preventAutoHideAsync();
@@ -17,8 +14,6 @@ function Navigator() {
   const { getUser } = useAppService();
   const { dispatch, checked, loggedIn, setUser, setLoggedIn } = useAppSlice();
   const { setPersistData, getPersistData } = useDataPersist();
-
-  const [isOpen, setOpen] = useState(true);
 
   /**
    * preload assets and user data
