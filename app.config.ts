@@ -42,7 +42,7 @@ export default ({ config: expoConfig }: ConfigContext): ExpoConfig => {
   }
 
   // switch expo configuration based on environment
-  const targetEnv = process.env.NODE_ENV;
+  const targetEnv = process.env.NODE_ENV ?? 'development';
   if (targetEnv === 'production') setProdConfig();
   else setDevConfig();
 
