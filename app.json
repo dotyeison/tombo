@@ -2,10 +2,14 @@
   "expo": {
     "name": "react-native-boilerplate",
     "slug": "react-native-boilerplate",
-    "owner": "wataru",
+    "owner": "paoloose",
     "privacy": "unlisted",
     "version": "1.0.0",
-    "platforms": ["ios", "android", "web"],
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "orientation": "portrait",
     "icon": "./assets/images/logo-lg.png",
     "userInterfaceStyle": "light",
@@ -14,7 +18,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
