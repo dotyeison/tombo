@@ -1,5 +1,5 @@
 import PocketBase from 'pocketbase';
-const pb = new PocketBase('https://dotyeison.paoloose.site');
+export const pb = new PocketBase('https://dotyeison.paoloose.site');
 
 const sendReport = async (data: object) => {
   const res = await pb.collection('report').create(data);
