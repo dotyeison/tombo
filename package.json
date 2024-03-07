@@ -4,7 +4,6 @@
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "ci": "watchman watch-del-all && rm -rf node_modules && npm install",
-    "prestart": "watchman watch-del-all",
     "start": "NODE_ENV=production npx expo start -c",
     "start:dev": "NODE_ENV=development npx expo start -c",
     "android": "NODE_ENV=production npx expo start --android",
