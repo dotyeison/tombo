@@ -25,6 +25,8 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.dotyeison.tombo",
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/logo-lg.png",
         "backgroundColor": "#F6F8FA"

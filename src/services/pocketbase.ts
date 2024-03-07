@@ -11,7 +11,21 @@ const getEventTypes = async () => {
   return res;
 };
 
+const subscribeToReports = () => {
+  pb.collection('reports').subscribe(
+    '*',
+    function (e) {
+      console.log(e.action);
+      console.log(e.record);
+    },
+    {
+      /* other options like expand, custom headers, etc. */
+    },
+  );
+};
+
 export default {
   sendReport,
   getEventTypes,
+  subscribeToReports,
 };

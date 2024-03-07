@@ -10,4 +10,5 @@ export interface IAppState {
   selectedLocation?: { latitude: number; longitude: number };
   currentLocation?: { latitude: number; longitude: number };
   eventTypes: Record<string, string>;
+  expoPushToken?: string;
 }

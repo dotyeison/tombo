@@ -16,7 +16,7 @@ interface Location {
 }
 
 export default function Reports({ navigation }: StackProps) {
-  const { currentLocation, eventTypes } = useAppState();
+  const { currentLocation, eventTypes, expoPushToken } = useAppState();
   const [eventType, setEventType] = useState('');
   const [location, setLocation] = useState<Location>({});
   const [description, setDescription] = useState('');
@@ -56,11 +56,29 @@ export default function Reports({ navigation }: StackProps) {
     }
   };
 
-  const test = () => {
-    console.log('eventType name: ', eventType);
-    console.log('eventType id: ', eventTypes[eventType]);
-    console.log('location: ', location);
-    console.log('description: ', description);
+  const test = async () => {
+    const message = {
+      to: expoPushToken,
+      sound: 'default',
+      title: 'Original Title',
+      body: 'And here is the body!',
+      data: { someData: 'goes here' },
+    };
+
+    console.log({ message });
+    console.log(`sending push notification with token ${expoPushToken}`);
+
+    await fetch('https://exp.host/--/api/v2/push/send', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-encoding': 'gzip, deflate',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(message),
+    });
+
+    console.log('push notification sent');
   };
 
   return (
@@ -77,7 +95,7 @@ export default function Reports({ navigation }: StackProps) {
         placeholder="Descripción"
         value={description}
       />
-      <Button onPress={test} title="test" />
+      <Button onPress={test} title="teeeest" />
       <Text style={styles.title}>Reportes</Text>
     </View>
   );
