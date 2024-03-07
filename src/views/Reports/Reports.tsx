@@ -1,8 +1,87 @@
-import React from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Text, View, StyleSheet, StatusBar, Button } from 'react-native';
 import { StackProps } from '@navigator/stack';
 import { colors } from '@theme';
+import { useAppState } from 'src/states/app/app.state';
+import reverseGeocode from '@utils/reverseGeocode';
+import { ImagePickerResponse, launchCamera } from 'react-native-image-picker';
+import { TextInput } from 'react-native-gesture-handler';
+import { SelectList } from 'react-native-dropdown-select-list';
 import pocketbase from 'src/services/pocketbase';
+
+interface Location {
+  latitude?: number;
+  longitude?: number;
+  placeName?: string;
+}
+
+export default function Reports({ navigation }: StackProps) {
+  const { currentLocation, eventTypes } = useAppState();
+  const [eventType, setEventType] = useState('');
+  const [location, setLocation] = useState<Location>({});
+  const [description, setDescription] = useState('');
+  const [media, setMedia] = useState<ImagePickerResponse>();
+
+  useEffect(() => {
+    const getNamePlace = async () => {
+      if (location) {
+        const placeName = await reverseGeocode(currentLocation!);
+        setLocation({
+          latitude: currentLocation?.latitude,
+          longitude: currentLocation?.longitude,
+          placeName,
+        });
+      }
+    };
+    getNamePlace();
+  }, []);
+
+  const handleSendReport = async () => {
+    const report = {
+      description,
+      eventType,
+      latitude: location.latitude,
+      longitude: location.longitude,
+      placeName: location.placeName,
+      media,
+    };
+
+    await pocketbase.sendReport(report);
+  };
+
+  const handleOpenCamera = async () => {
+    const result = await launchCamera({ mediaType: 'photo' });
+    if (result) {
+      setMedia(result);
+    }
+  };
+
+  const test = () => {
+    console.log('eventType name: ', eventType);
+    console.log('eventType id: ', eventTypes[eventType]);
+    console.log('location: ', location);
+    console.log('description: ', description);
+  };
+
+  return (
+    <View style={styles.root}>
+      <StatusBar barStyle="light-content" />
+      <SelectList
+        setSelected={(value: string) => setEventType(value)}
+        data={Array.from(Object.keys(eventTypes))}
+      />
+      <View />
+      <TextInput
+        style={{ height: 40, borderColor: 'gray', borderWidth: 1, width: '80%' }}
+        onChangeText={text => setDescription(text)}
+        placeholder="Descripción"
+        value={description}
+      />
+      <Button onPress={test} title="test" />
+      <Text style={styles.title}>Reportes</Text>
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
   root: {
@@ -30,13 +109,3 @@ const styles = StyleSheet.create({
     backgroundColor: colors.lightPurple,
   },
 });
-
-export default function Reports({ navigation }: StackProps) {
-  return (
-    <View style={styles.root}>
-      <StatusBar barStyle="light-content" />
-      <Button onPress={() => console.log('click')} title="Click me" />
-      <Text style={styles.title}>Reportes</Text>
-    </View>
-  );
-}
