@@ -23,6 +23,11 @@
           "error",
           {
             "endOfLine": "auto"
+          },
+          {
+            "useTabs": false,
+            "tabWidth": 2,
+            "printWidth": 80
           }
         ]
       }

@@ -1,9 +1,10 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import * as SplashScreen from 'expo-splash-screen';
 import { useAppState } from '@states/app/app.state';
 import { IUser } from '@states/app/app.state.types';
 import DrawerNavigator from './drawer';
+import { LoginModal } from '../components/Modal/LoginModal';
 import { loadImages, loadFonts } from '@theme';
 import { useDataPersist, DataPersistKeys } from '@hooks';
 import pocketbase from 'src/services/pocketbase';
@@ -93,6 +94,7 @@ function Navigator() {
   return (
     isUserChecked && (
       <NavigationContainer>
+        <LoginModal />
         <DrawerNavigator />
       </NavigationContainer>
     )
