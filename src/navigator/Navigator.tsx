@@ -8,7 +8,15 @@ import { loadImages, loadFonts } from '@theme';
 import { useDataPersist, DataPersistKeys } from '@hooks';
 
 import * as Location from 'expo-location';
-import reverseGeocode from '@utils/reverseGeocode';
+import * as TaskManager from 'expo-task-manager';
+const LOCATION_TASK_NAME = 'background-location-task';
+
+interface TaskManagerArgs {
+  data: {
+    locations: Location.LocationObject[];
+  };
+  error: TaskManager.TaskManagerError | null;
+}
 
 // keep the splash screen visible while complete fetching resources
 SplashScreen.preventAutoHideAsync();
@@ -26,24 +34,34 @@ function Navigator() {
       await Promise.all([loadImages(), loadFonts()]);
 
       // get current location
-      const { status } = await Location.requestForegroundPermissionsAsync();
+      const { status } = await Location.requestBackgroundPermissionsAsync();
 
       if (status !== 'granted') {
         return alert('Permission to access location was denied');
       }
 
-      const location = await Location.getCurrentPositionAsync({});
+      await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
+        accuracy: Location.Accuracy.Balanced,
+        timeInterval: 5000,
+        distanceInterval: 0,
+      });
 
-      const latitude = location.coords.latitude;
-      const longitude = location.coords.longitude;
-      const place_name = await reverseGeocode({ latitude, longitude });
-
-      dispatch(
-        setCurrentLocation({
-          latitude,
-          longitude,
-          place_name,
-        }),
+      TaskManager.defineTask(
+        LOCATION_TASK_NAME,
+        async ({ data: { locations }, error }: TaskManagerArgs) => {
+          if (error) {
+            console.log('Error on background location task', error);
+            return;
+          }
+          const latitude = locations[0].coords.latitude;
+          const longitude = locations[0].coords.longitude;
+          dispatch(
+            setCurrentLocation({
+              latitude,
+              longitude,
+            }),
+          );
+        },
       );
 
       // check if we have user in cache

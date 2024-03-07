@@ -3,9 +3,8 @@ import { View, StyleSheet, StatusBar } from 'react-native';
 import { StackProps } from '@navigator/stack';
 import { colors } from '@theme';
 import MapView, { Marker, PROVIDER_GOOGLE, MapPressEvent } from 'react-native-maps';
-import { useDispatch } from 'react-redux';
 import { useAppState } from 'src/states/app/app.state';
-import reverseGeocode from '@utils/reverseGeocode';
+// import reverseGeocode from '@utils/reverseGeocode';
 
 const styles = StyleSheet.create({
   root: {
@@ -44,13 +43,12 @@ export default function HomeMap({ navigation }: StackProps) {
   const onLocationSelect = async (event: MapPressEvent) => {
     const latitude = event.nativeEvent.coordinate.latitude;
     const longitude = event.nativeEvent.coordinate.longitude;
-    const place_name = await reverseGeocode({ latitude, longitude });
+    // const place_name = await reverseGeocode({ latitude, longitude });
 
     dispatch(
       setSelectedLocation({
         latitude,
         longitude,
-        place_name,
       }),
     );
   };
