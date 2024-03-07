@@ -27,7 +27,7 @@ export default function TabNavigator() {
         tabBarStyle: { height: 55, paddingBottom: 5 },
         tabBarInactiveTintColor: colors.gray,
         tabBarInactiveBackgroundColor: colors.white,
-        tabBarActiveTintColor: colors.lightPurple,
+        tabBarActiveTintColor: colors.black,
         tabBarActiveBackgroundColor: colors.white,
       })}>
       <Tab.Screen

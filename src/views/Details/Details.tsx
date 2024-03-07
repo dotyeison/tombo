@@ -41,7 +41,7 @@ export default function Details({ navigation, route }: StackProps) {
         titleStyle={styles.buttonTitle}
         style={styles.button}
         gradientBackgroundProps={{
-          colors: [colors.purple, colors.pink],
+          colors: [colors.black, colors.black],
           start: { x: 0, y: 1 },
           end: { x: 0.8, y: 0 },
         }}
