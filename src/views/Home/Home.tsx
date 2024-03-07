@@ -1,8 +1,8 @@
 import React from 'react';
-import { Text, View, StyleSheet, StatusBar } from 'react-native';
+import { View, StyleSheet, StatusBar } from 'react-native';
 import { StackProps } from '@navigator/stack';
 import { colors } from '@theme';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 
 const styles = StyleSheet.create({
   root: {
@@ -39,8 +39,7 @@ export default function Home({ navigation }: StackProps) {
   return (
     <View style={styles.root}>
       <StatusBar barStyle="light-content" />
-      <Text style={styles.title}>Home</Text>
-      <MapView style={styles.map}>
+      <MapView style={styles.map} mapType="standard" provider={PROVIDER_GOOGLE}>
         <Marker
           description="Delivery person 1"
           coordinate={{

@@ -43,6 +43,18 @@
     },
     "runtimeVersion": {
       "policy": "sdkVersion"
-    }
+    },
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Permite que Tombo muestre tu ubicación en el mapa",
+          "locationAlwaysAndWhenInUsePermission": "Permite que Tombo conozca tu ubicación :)",
+          "isAndroidBackgroundLocationEnabled": true,
+          "isAndroidForegroundServiceEnabled": true,
+          "isIosBackgroundLocationEnabled": true
+        }
+      ]
+    ]
   }
 }
