@@ -26,12 +26,12 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/logo.png",
+        "foregroundImage": "./assets/images/logo-lg.png",
         "backgroundColor": "#F6F8FA"
       }
     },
     "web": {
-      "favicon": "./assets/images/logo.png"
+      "favicon": "./assets/images/logo-sm.png"
     },
     "extra": {
       "eas": {
