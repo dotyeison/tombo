@@ -4,7 +4,7 @@ export interface IUser {
 }
 
 export interface IAppState {
-  checked: boolean;
+  isUserChecked: boolean;
   loggedIn: boolean;
   user?: IUser;
 }

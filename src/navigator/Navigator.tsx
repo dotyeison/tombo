@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
-import { View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import * as SplashScreen from 'expo-splash-screen';
-import { useAppSlice, useAppService, IUser } from '@modules/app';
+import { useAppState } from '@states/app/app.state';
+import { IUser } from '@states/app/app.state.types';
 import DrawerNavigator from './drawer';
 import { loadImages, loadFonts } from '@theme';
 import { useDataPersist, DataPersistKeys } from '@hooks';
@@ -11,61 +11,40 @@ import { useDataPersist, DataPersistKeys } from '@hooks';
 SplashScreen.preventAutoHideAsync();
 
 function Navigator() {
-  const { getUser } = useAppService();
-  const { dispatch, checked, loggedIn, setUser, setLoggedIn } = useAppSlice();
-  const { setPersistData, getPersistData } = useDataPersist();
+  const { dispatch, isUserChecked, setUser, setLoggedIn } = useAppState();
+  const { getPersistData } = useDataPersist();
 
   /**
-   * preload assets and user data
+   * This function preloads the app data in the splash initial screen
    */
   const preload = async () => {
     try {
       // preload assets
       await Promise.all([loadImages(), loadFonts()]);
 
-      // fetch user data (fake promise function to simulate async function)
-      const user = await getUser();
-
-      // store user data to redux
+      // check if we have user in cache
+      const user = await getPersistData<IUser>(DataPersistKeys.USER);
       dispatch(setUser(user));
-      dispatch(setLoggedIn(!!user));
-
-      // store user data to persistent storage (async storage)
-      if (user) setPersistData<IUser>(DataPersistKeys.USER, user);
-
-      // hide splash screen
+      dispatch(setLoggedIn(true));
+    } catch {
+      console.log('[##] no user found in cache');
+      dispatch(setLoggedIn(false));
+    } finally {
       SplashScreen.hideAsync();
-    } catch (err) {
-      console.log('[##] preload error:', err);
-
-      // if preload failed, try to get user data from persistent storage
-      getPersistData<IUser>(DataPersistKeys.USER)
-        .then(user => {
-          if (user) {
-            dispatch(setUser(user));
-            dispatch(setLoggedIn(!!user));
-          }
-        })
-        .finally(() => {
-          // hide splash screen
-          SplashScreen.hideAsync();
-        });
     }
   };
 
   useEffect(() => {
+    // ran once on app start
     preload();
   }, []);
 
-  // TODO: switch router by loggedIn status
-  console.log('[##] loggedIn', loggedIn);
-
-  return checked && loggedIn ? (
-    <NavigationContainer>
-      <DrawerNavigator />
-    </NavigationContainer>
-  ) : (
-    <View />
+  return (
+    isUserChecked && (
+      <NavigationContainer>
+        <DrawerNavigator />
+      </NavigationContainer>
+    )
   );
 }
 

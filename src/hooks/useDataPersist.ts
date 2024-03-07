@@ -29,7 +29,10 @@ export function useDataPersist() {
   async function getPersistData<T>(key: DataPersistKeys): Promise<T> {
     return new Promise((resolve, reject) => {
       AsyncStorage.getItem(key)
-        .then(res => resolve(res ? JSON.parse(res) : undefined))
+        .then(res => {
+          if (res) resolve(JSON.parse(res));
+          else reject(new Error('No data found'));
+        })
         .catch(err => reject(err));
     });
   }

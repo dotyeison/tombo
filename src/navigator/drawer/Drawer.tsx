@@ -1,7 +1,7 @@
 import React from 'react';
 import { SafeAreaView, Text, View, StyleSheet } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import TabNavigator from '../tab/Tab';
+import TabNavigator from '@navigator/tab/Tab';
 import { DrawerParamList } from './Drawer.typeDefs';
 
 const Drawer = createDrawerNavigator<DrawerParamList>();
@@ -16,7 +16,8 @@ const styles = StyleSheet.create({
   },
 });
 
-const drawerContents = () => (
+// A 'drawer' is that toggable app sidebar
+const DrawerContent = () => (
   <SafeAreaView>
     <View style={styles.root}>
       <Text>Side Menu Contents</Text>
@@ -29,7 +30,7 @@ function DrawerNavigator() {
     <Drawer.Navigator
       initialRouteName="MainDrawer"
       screenOptions={{ headerShown: false }}
-      drawerContent={drawerContents}>
+      drawerContent={DrawerContent}>
       <Drawer.Screen name="MainDrawer" component={TabNavigator} />
     </Drawer.Navigator>
   );

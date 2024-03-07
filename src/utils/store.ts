@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import app from '@modules/app/app.slice';
+import app from '@states/app/app.state';
 import config from '@utils/config';
 
 const store = configureStore({
