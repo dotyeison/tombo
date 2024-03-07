@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Alert, Modal, StyleSheet, Text, TextInput, Pressable, View } from 'react-native';
+import { Alert, Modal, Image, StyleSheet, Text, TextInput, Pressable, View } from 'react-native';
 
 export const LoginModal = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -39,51 +39,52 @@ export const LoginModal = () => {
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <Pressable style={styles.closeButton} onPress={() => setModalVisible(false)}>
-            <Text style={styles.closeButtonText}>X</Text>
+            <Image source={require('assets/images/close.png')} style={{ height: 15, width: 15 }} />
           </Pressable>
-          <Text style={styles.modalTitle}>¡Bienvenido a Tombo!</Text>
+          <Image source={require('assets/images/alert.png')} style={{ height: 70, width: 70 }} />
+          <Text style={styles.modalTitle}>¡Bienvenid@ a Tombo!</Text>
           <Text style={styles.modalSubtitle}>{isSignUp ? 'Regístrate' : 'Inicia sesión'}</Text>
           <TextInput
-            style={styles.input}
+            style={[styles.input, { width: 200 }]}
             placeholder="Nombre de usuario"
             onChangeText={text => setUsername(text)}
           />
           {isSignUp && (
             <TextInput
-              style={styles.input}
+              style={[styles.input, { width: 200 }]}
               placeholder="Correo Electrónico"
               onChangeText={text => setEmail(text)}
             />
           )}
           <TextInput
-            style={styles.input}
+            style={[styles.input, { width: 200 }]}
             placeholder="Contraseña"
             secureTextEntry
             onChangeText={text => setPassword(text)}
           />
           {isSignUp && (
             <TextInput
-              style={styles.input}
+              style={[styles.input, { width: 200 }]}
               placeholder="Confirmar Contraseña"
               secureTextEntry
               onChangeText={text => setConfirmPassword(text)}
             />
           )}
+
           <Text style={styles.switchText}>
-            {isSignUp
-              ? '¿Ya tienes una cuenta? Inicia sesión'
-              : '¿No tienes una cuenta? Regístrate'}
+            {isSignUp ? '¿Ya tienes una cuenta? ' : '¿No tienes una cuenta? '}
+            <Pressable onPress={() => setIsSignUp(!isSignUp)}>
+              <Text style={{ textDecorationLine: 'underline' }}>
+                {isSignUp ? 'Inicia sesión' : 'Regístrate'}
+              </Text>
+            </Pressable>
           </Text>
+
           <View style={styles.buttonContainer}>
             <Pressable
-              style={[styles.button, styles.primaryButton]}
+              style={[styles.primaryButton]}
               onPress={isSignUp ? handleRegister : handleLogin}>
               <Text style={styles.buttonText}>{isSignUp ? 'Registrarse' : 'Ingresar'}</Text>
-            </Pressable>
-            <Pressable style={styles.textLink} onPress={toggleSignUp}>
-              <Text style={styles.buttonText}>
-                {isSignUp ? 'Ir a Iniciar sesión' : 'Ir a Registrarse'}
-              </Text>
             </Pressable>
           </View>
         </View>
@@ -103,39 +104,27 @@ const styles = StyleSheet.create({
     margin: 20,
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 35,
+    padding: 25,
     alignItems: 'center',
-    shadowColor: '#000',
+    shadowColor: 'blue',
     shadowOffset: {
       width: 0,
       height: 2,
     },
     shadowOpacity: 0.25,
-    shadowRadius: 4,
+    shadowRadius: 8,
     elevation: 5,
-  },
-  openButton: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-    backgroundColor: '#F194FF',
-  },
-  buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
   },
   closeButton: {
     position: 'absolute',
     top: 10,
     right: 10,
-    padding: 10,
-    zIndex: 1,
+    opacity: '80%',
   },
-  closeButtonText: {
-    fontSize: 18,
+  buttonText: {
+    color: 'white',
     fontWeight: 'bold',
-    color: 'red',
+    textAlign: 'center',
   },
   modalTitle: {
     fontSize: 24,
@@ -147,12 +136,19 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   input: {
+    backgroundColor: '#E2EAEA',
     height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
+    borderRadius: 8,
     marginBottom: 15,
     paddingHorizontal: 10,
-    borderRadius: 5,
+    shadowColor: 'blue',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 5,
   },
   switchText: {
     marginBottom: 15,
@@ -165,9 +161,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   primaryButton: {
-    backgroundColor: '#2196F3',
-  },
-  textLink: {
-    textDecorationLine: 'underline',
+    backgroundColor: 'black',
+    padding: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
