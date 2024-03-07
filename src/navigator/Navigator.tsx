@@ -7,11 +7,14 @@ import DrawerNavigator from './drawer';
 import { loadImages, loadFonts } from '@theme';
 import { useDataPersist, DataPersistKeys } from '@hooks';
 
+import * as Location from 'expo-location';
+import reverseGeocode from '@utils/reverseGeocode';
+
 // keep the splash screen visible while complete fetching resources
 SplashScreen.preventAutoHideAsync();
 
 function Navigator() {
-  const { dispatch, isUserChecked, setUser, setLoggedIn } = useAppState();
+  const { dispatch, isUserChecked, setUser, setLoggedIn, setCurrentLocation } = useAppState();
   const { getPersistData } = useDataPersist();
 
   /**
@@ -21,6 +24,27 @@ function Navigator() {
     try {
       // preload assets
       await Promise.all([loadImages(), loadFonts()]);
+
+      // get current location
+      const { status } = await Location.requestForegroundPermissionsAsync();
+
+      if (status !== 'granted') {
+        return alert('Permission to access location was denied');
+      }
+
+      const location = await Location.getCurrentPositionAsync({});
+
+      const latitude = location.coords.latitude;
+      const longitude = location.coords.longitude;
+      const place_name = await reverseGeocode({ latitude, longitude });
+
+      dispatch(
+        setCurrentLocation({
+          latitude,
+          longitude,
+          place_name,
+        }),
+      );
 
       // check if we have user in cache
       const user = await getPersistData<IUser>(DataPersistKeys.USER);

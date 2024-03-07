@@ -1,8 +1,8 @@
 import React from 'react';
-import { Text, View, StyleSheet, StatusBar } from 'react-native';
-import Button from '@components/Button';
+import { Text, View, StyleSheet, StatusBar, Button } from 'react-native';
 import { StackProps } from '@navigator/stack';
 import { colors } from '@theme';
+import pocketbase from 'src/services/pocketbase';
 
 const styles = StyleSheet.create({
   root: {
@@ -35,15 +35,8 @@ export default function Reports({ navigation }: StackProps) {
   return (
     <View style={styles.root}>
       <StatusBar barStyle="light-content" />
+      <Button onPress={() => console.log('click')} title="Click me" />
       <Text style={styles.title}>Reportes</Text>
-      <Button
-        title="Go to Details"
-        titleStyle={styles.buttonTitle}
-        style={styles.button}
-        onPress={() => {
-          navigation.navigate('DetailsStack', { from: 'Profile' });
-        }}
-      />
     </View>
   );
 }

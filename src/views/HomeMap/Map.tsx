@@ -2,7 +2,10 @@ import React from 'react';
 import { View, StyleSheet, StatusBar } from 'react-native';
 import { StackProps } from '@navigator/stack';
 import { colors } from '@theme';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_GOOGLE, MapPressEvent } from 'react-native-maps';
+import { useDispatch } from 'react-redux';
+import { useAppState } from 'src/states/app/app.state';
+import reverseGeocode from '@utils/reverseGeocode';
 
 const styles = StyleSheet.create({
   root: {
@@ -36,10 +39,30 @@ const styles = StyleSheet.create({
 });
 
 export default function HomeMap({ navigation }: StackProps) {
+  const { dispatch, setSelectedLocation } = useAppState();
+
+  const onLocationSelect = async (event: MapPressEvent) => {
+    const latitude = event.nativeEvent.coordinate.latitude;
+    const longitude = event.nativeEvent.coordinate.longitude;
+    const place_name = await reverseGeocode({ latitude, longitude });
+
+    dispatch(
+      setSelectedLocation({
+        latitude,
+        longitude,
+        place_name,
+      }),
+    );
+  };
+
   return (
     <View style={styles.root}>
       <StatusBar barStyle="light-content" />
-      <MapView style={styles.map} mapType="standard" provider={PROVIDER_GOOGLE}>
+      <MapView
+        style={styles.map}
+        mapType="standard"
+        provider={PROVIDER_GOOGLE}
+        onPress={onLocationSelect}>
         <Marker
           description="Delivery person 1"
           coordinate={{

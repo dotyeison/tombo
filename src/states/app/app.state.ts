@@ -7,6 +7,8 @@ const initialState: IAppState = {
   isUserChecked: false,
   loggedIn: false,
   user: undefined,
+  selectedLocation: undefined,
+  currentLocation: undefined,
 };
 
 // You can think of an 'slice' as a state and the set of actions that can update that state
@@ -20,6 +22,18 @@ const slice = createSlice({
     },
     setUser: (state: IAppState, { payload }: PayloadAction<IUser | undefined>) => {
       state.user = payload;
+    },
+    setSelectedLocation: (
+      state: IAppState,
+      { payload }: PayloadAction<IAppState['selectedLocation']>,
+    ) => {
+      state.selectedLocation = payload;
+    },
+    setCurrentLocation: (
+      state: IAppState,
+      { payload }: PayloadAction<IAppState['currentLocation']>,
+    ) => {
+      state.currentLocation = payload;
     },
     reset: () => initialState,
   },
