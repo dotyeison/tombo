@@ -66,16 +66,9 @@ function Navigator() {
   console.log('[##] loggedIn', loggedIn);
 
   return checked && loggedIn ? (
-    <>
-      <NavigationContainer>
-        <DrawerNavigator />
-      </NavigationContainer>
-      {!isWeb && (
-        <BottomSheet isOpen={isOpen} initialOpen>
-          <WelcomeBottomSheetContents onClose={() => setOpen(false)} />
-        </BottomSheet>
-      )}
-    </>
+    <NavigationContainer>
+      <DrawerNavigator />
+    </NavigationContainer>
   ) : (
     <View />
   );
