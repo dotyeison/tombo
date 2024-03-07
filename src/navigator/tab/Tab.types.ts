@@ -10,6 +10,7 @@ export type TabParamList = {
   MapTab: undefined;
   AlertsTab: undefined;
   ReportTab: undefined;
+  SavedTab: undefined;
   // add more tab params...
 };
 

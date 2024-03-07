@@ -3,7 +3,12 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AntDesign } from '@expo/vector-icons';
 import { colors } from '@theme';
 import { TabParamList, TabBarStatus } from './Tab.types';
-import { MapStackNavigator, AlertsStackNavigator, ReportsStackNavigator } from '../stack/Stack';
+import {
+  MapStackNavigator,
+  AlertsStackNavigator,
+  ReportsStackNavigator,
+  SavedStackNavigator,
+} from '../stack/Stack';
 
 const Tab = createBottomTabNavigator<TabParamList>();
 
@@ -15,6 +20,8 @@ const renderTabBarIcon = (tabName: keyof TabParamList) => (tabStatus: TabBarStat
       return <AntDesign name="bells" size={24} color={tabStatus.color} />;
     case 'ReportTab':
       return <AntDesign name="addfile" size={24} color={tabStatus.color} />;
+    case 'SavedTab':
+      return <AntDesign name="tago" size={24} color={tabStatus.color} />;
   }
 };
 
@@ -44,6 +51,11 @@ export default function TabNavigator() {
         name="ReportTab"
         component={ReportsStackNavigator as any}
         options={{ title: 'Reportar' }}
+      />
+      <Tab.Screen
+        name="SavedTab"
+        component={SavedStackNavigator as any}
+        options={{ title: 'Guardados' }}
       />
     </Tab.Navigator>
   );

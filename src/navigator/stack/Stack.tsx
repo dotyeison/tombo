@@ -9,6 +9,7 @@ import { colors } from '@theme';
 import Map from '@views/HomeMap';
 import Alerts from '@views/Alerts';
 import Reports from '@views/Reports';
+import Saved from '@views/Saved';
 
 import Details from '@views/Details';
 
@@ -71,6 +72,32 @@ export function ReportsStackNavigator({ navigation }: DrawerProps) {
         name="ReportsStack"
         options={{
           title: 'Reportes',
+          headerTitle: () => <StackHeaderTitle />,
+          headerLeft: () => <StackHeaderLeft onPress={() => navigation.toggleDrawer()} />,
+          headerTitleAlign: 'center',
+        }}
+      />
+      <Stack.Screen
+        component={Details}
+        name="DetailsStack"
+        options={{
+          title: 'Details',
+          headerTitle: () => <StackHeaderTitle />,
+          headerTitleAlign: 'center',
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
+
+export function SavedStackNavigator({ navigation }: DrawerProps) {
+  return (
+    <Stack.Navigator screenOptions={navigationProps}>
+      <Stack.Screen
+        component={Saved}
+        name="AlertsStack"
+        options={{
+          title: 'Alerts',
           headerTitle: () => <StackHeaderTitle />,
           headerLeft: () => <StackHeaderLeft onPress={() => navigation.toggleDrawer()} />,
           headerTitleAlign: 'center',
