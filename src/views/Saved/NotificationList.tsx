@@ -1,11 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Switch, TouchableOpacity, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Switch,
+  TouchableOpacity,
+  ScrollView,
+  TouchableHighlight,
+} from 'react-native';
 import { RecordModel } from 'pocketbase';
 import { Ionicons } from '@expo/vector-icons';
 import RegisterPlaceModal from 'src/components/Modal/SavePlaceModal';
 import { pb } from 'src/services/pocketbase';
+import { StackProps } from '@navigator';
 
-const NotificationList: React.FC = () => {
+const NotificationList = ({ navigation }: StackProps) => {
   const [notifications, setNotifications] = useState<RecordModel[]>([]);
 
   useEffect(() => {
@@ -55,7 +64,17 @@ const NotificationList: React.FC = () => {
               <Text style={styles.timestamp}>{notification.created}</Text>
             </>
             <View style={styles.bottom}>
-              <Text style={styles.bottomText}>Abrir en el mapa</Text>
+              <TouchableHighlight
+                onPress={() => {
+                  navigation.navigate('MapStack', {
+                    focus: {
+                      lat: notification.lat,
+                      lon: notification.lon,
+                    },
+                  });
+                }}>
+                <Text style={styles.bottomText}>Abrir en el mapa</Text>
+              </TouchableHighlight>
               <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
                 <Text style={styles.bottomText}>Recibir alertas</Text>
                 <Switch

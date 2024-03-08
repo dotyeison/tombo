@@ -7,6 +7,7 @@ import { RecordModel } from 'pocketbase';
 import { useAppState } from '@states/app/app.state';
 import { pb } from 'src/services/pocketbase';
 import { useState } from 'react';
+import { StackProps } from '@navigator';
 
 const styles = StyleSheet.create({
   alertCard: {
@@ -40,12 +41,15 @@ export interface IAlertReportData extends RecordModel {
 export function AlertItem({
   report,
   setGalleryIsVisible,
+  navigation,
 }: {
   report: IAlertReportData;
   setGalleryIsVisible: (value: { index: number; value: boolean }) => void;
-}) {
+} & StackProps) {
   const [reportData, _setReportData] = useState<IAlertReportData>(report);
-  const { currentLocation } = useAppState();
+  const { foregroundLocation, currentLocation } = useAppState();
+
+  const userLocation = foregroundLocation ?? currentLocation;
 
   return (
     <View key={reportData.id} style={styles.alertCard}>
@@ -63,6 +67,12 @@ export function AlertItem({
         underlayColor="#fff"
         onPress={() => {
           console.log(`navigating to ${reportData.lat}, ${reportData.lon}`);
+          navigation.navigate('MapStack', {
+            focus: {
+              lat: reportData.lat,
+              lon: reportData.lon,
+            },
+          });
         }}>
         <View
           style={{
@@ -82,15 +92,15 @@ export function AlertItem({
           />
           <Text style={{ fontSize: 14 }}>
             {reportData.address_name}{' '}
-            {currentLocation?.latitude !== 0 && (
+            {userLocation?.latitude !== 0 && (
               <Text style={{ fontWeight: '600' }}>
                 (
                 {formatDistanceAsText(
                   distanceBetweenCoordinates(
                     { lat: reportData.lat, lon: reportData.lon },
                     {
-                      lat: currentLocation!.latitude,
-                      lon: currentLocation!.longitude,
+                      lat: userLocation!.latitude,
+                      lon: userLocation!.longitude,
                     },
                   ),
                 )}

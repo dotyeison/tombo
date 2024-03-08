@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    marginBottom: 20,
+    marginBottom: 15,
     marginTop: 15,
     fontWeight: '700',
   },
@@ -74,7 +74,7 @@ export default function Alerts({ navigation }: StackProps) {
   };
 
   useEffect(() => {
-    const interval = setInterval(setFilteredReports, 2000);
+    const interval = setInterval(setFilteredReports, 1000);
     return () => clearInterval(interval);
   }, []);
 
@@ -100,7 +100,12 @@ export default function Alerts({ navigation }: StackProps) {
               visible={galleryVisible.value}
               onRequestClose={() => setGalleryIsVisible({ index: 0, value: false })}
             />
-            <AlertItem report={report} setGalleryIsVisible={setGalleryIsVisible} />
+            <AlertItem
+              report={report}
+              navigation={navigation}
+              route={{} as any}
+              setGalleryIsVisible={setGalleryIsVisible}
+            />
           </View>
         ))}
       </ScrollView>

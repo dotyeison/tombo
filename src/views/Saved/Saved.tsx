@@ -8,7 +8,7 @@ export default function SavedUbications({ navigation }: StackProps) {
   return (
     <View style={styles.root}>
       <Text style={styles.title}>Ubicaciones guardadas</Text>
-      <NotificationList />
+      <NotificationList navigation={navigation} route={69 as any} />
     </View>
   );
 }
