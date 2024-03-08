@@ -10,13 +10,14 @@ export const LoginModal = () => {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
+  const { dispatch, setUser, setLoggedIn } = useAppState();
 
   useEffect(() => {
     setModalVisible(true);
   }, []);
 
   const authenticateWithPocketBase = async () => {
-    const { dispatch, setUser, setLoggedIn } = useAppState();
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     if (isSignUp) {
       // Register (sign up)
       try {
@@ -32,6 +33,7 @@ export const LoginModal = () => {
     } else {
       // Login (sign in)
       try {
+        console.log({ username, password });
         const authData = await pb.collection('users').authWithPassword(username, password); //ingresa datos para loggearse
         dispatch(setUser({ username, password }));
         dispatch(setLoggedIn(true)); //se cambia el state a logeado
