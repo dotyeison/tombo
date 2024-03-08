@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Switch, TouchableOpacity, ScrollView } from 'react-native';
 import { RecordModel } from 'pocketbase';
 import { Ionicons } from '@expo/vector-icons';
-import SavePlaceModal from 'src/components/Modal/SavePlaceModal';
 import { pb } from 'src/services/pocketbase';
 
 const NotificationList: React.FC = () => {
@@ -16,7 +15,7 @@ const NotificationList: React.FC = () => {
         console.log('notifications: ', saved_locations);
         setNotifications(saved_locations);
       });
-  }, [SavePlaceModal]);
+  }, []);
 
   const updateRecord = async (listening: boolean, record_id: any) => {
     try {
@@ -40,7 +39,7 @@ const NotificationList: React.FC = () => {
 
   return (
     <View>
-      <SavePlaceModal />
+      {/* <SavePlaceModal /> */}
       <ScrollView style={styles.container} contentContainerStyle={styles.scrollViewContent}>
         {notifications.map((notification, index) => (
           <View key={index} style={styles.card}>
