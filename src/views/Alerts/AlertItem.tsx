@@ -58,7 +58,7 @@ export function AlertItem({
       <Text style={{ fontWeight: '800', marginTop: 3, marginBottom: 2, fontSize: 18 }}>
         {reportData.expand?.event_type.name}
       </Text>
-      <Text style={{ marginBottom: 8 }}>{reportData.description}</Text>
+      <Text style={{ marginBottom: 8 }}>{reportData.description.trim()}</Text>
       <TouchableHighlight
         underlayColor="#fff"
         onPress={() => {
