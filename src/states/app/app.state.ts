@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { State, Dispatch } from '@utils/store';
 import { IUser, IAppState } from './app.state.types';
+import { DataPersistKeys, useDataPersist } from '@hooks';
 
 const initialState: IAppState = {
   isUserChecked: false,
@@ -22,8 +23,13 @@ const slice = createSlice({
       state.isUserChecked = true;
       state.loggedIn = payload;
     },
-    setUser: (state: IAppState, { payload }: PayloadAction<IUser | undefined>) => {
+    setUser: (state: IAppState, { payload }: PayloadAction<IUser>) => {
       state.user = payload;
+      const { setPersistData } = useDataPersist();
+      setPersistData<IUser>(DataPersistKeys.USER, {
+        username: payload?.username,
+        password: payload?.password,
+      }); //
     },
     setSelectedLocation: (
       state: IAppState,

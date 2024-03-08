@@ -74,6 +74,7 @@ function Navigator() {
     isUserChecked,
     setUser,
     setLoggedIn,
+    loggedIn,
     setCurrentLocation,
     setEventTypes,
     setDeviceId,
@@ -191,10 +192,7 @@ function Navigator() {
 
   return (
     isUserChecked && (
-      <NavigationContainer>
-        <LoginModal />
-        <DrawerNavigator />
-      </NavigationContainer>
+      <NavigationContainer>{loggedIn ? <DrawerNavigator /> : <LoginModal />}</NavigationContainer>
     )
   );
 }

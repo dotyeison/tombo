@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useAppState } from '@states/app/app.state';
+import { IUser } from '@states/app/app.state.types';
 import { Alert, Modal, Image, StyleSheet, Text, TextInput, Pressable, View } from 'react-native';
 import { pb } from 'src/services/pocketbase';
 
@@ -15,23 +17,30 @@ export const LoginModal = () => {
   }, []);
 
   const authenticateWithPocketBase = async () => {
+    const { dispatch, setUser, setLoggedIn } = useAppState();
     if (isSignUp) {
       // Register (sign up)
       try {
         await pb.collection('users').create({ username, email, password, passwordConfirm });
+        dispatch(setUser({ username, password }));
+        dispatch(setLoggedIn(true)); //se cambia el state a loggeado
         Alert.alert('Registro exitoso');
       } catch (error) {
         console.error('Error during registration:', error);
+        dispatch(setLoggedIn(false));
         Alert.alert('Error durante el registro');
       }
     } else {
       // Login (sign in)
       try {
-        const authData = await pb.collection('users').authWithPassword(username, password);
+        const authData = await pb.collection('users').authWithPassword(username, password); //ingresa datos para loggearse
+        dispatch(setUser({ username, password }));
+        dispatch(setLoggedIn(true)); //se cambia el state a logeado
         Alert.alert('Inicio de sesión exitoso');
         console.log('Auth Data:', authData);
       } catch (error) {
         console.error('Error during login:', error);
+        dispatch(setLoggedIn(false));
         Alert.alert('Error durante el inicio de sesión');
       }
     }
@@ -68,11 +77,20 @@ export const LoginModal = () => {
           <Image source={require('assets/images/alert.png')} style={{ height: 70, width: 70 }} />
           <Text style={styles.modalTitle}>¡Bienvenid@ a Tombo!</Text>
           <Text style={styles.modalSubtitle}>{isSignUp ? 'Regístrate' : 'Inicia sesión'}</Text>
-          <TextInput
-            style={[styles.input, { width: 200 }]}
-            placeholder="Nombre de usuario"
-            onChangeText={text => setUsername(text)}
-          />
+          {!isSignUp && (
+            <TextInput
+              style={[styles.input, { width: 200 }]}
+              placeholder="Correo Electrónico/Nombre de usuario"
+              onChangeText={text => setUsername(text)}
+            />
+          )}
+          {isSignUp && (
+            <TextInput
+              style={[styles.input, { width: 200 }]}
+              placeholder="Nombre de usuario"
+              onChangeText={text => setUsername(text)}
+            />
+          )}
           {isSignUp && (
             <TextInput
               style={[styles.input, { width: 200 }]}
