@@ -49,6 +49,7 @@ const slice = createSlice({
       state: IAppState,
       { payload }: PayloadAction<IAppState['foregroundLocation']>,
     ) => {
+      console.log({ payload });
       state.foregroundLocation = payload;
     },
     setEventTypes: (state: IAppState, { payload }: PayloadAction<IAppState['eventTypes']>) => {

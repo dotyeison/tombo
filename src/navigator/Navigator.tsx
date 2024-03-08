@@ -112,13 +112,14 @@ function Navigator() {
 
       try {
         await Location.requestForegroundPermissionsAsync();
-        const location = await Location.getCurrentPositionAsync({
+        const initialLocation = await Location.getCurrentPositionAsync({
           accuracy: Location.Accuracy.High,
         });
+        console.log({ initialLocation });
         dispatch(
           setForegroundLocation({
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
+            latitude: initialLocation.coords.latitude,
+            longitude: initialLocation.coords.longitude,
           }),
         );
       } catch (foregroundLocationError) {

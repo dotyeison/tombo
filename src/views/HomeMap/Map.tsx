@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, StatusBar } from 'react-native';
+import { View, StyleSheet, StatusBar, Image } from 'react-native';
 import { StackProps } from '@navigator/stack';
 import { colors } from '@theme';
 import MapView, { Marker, PROVIDER_GOOGLE, MapPressEvent } from 'react-native-maps';
@@ -7,6 +7,7 @@ import { useAppState } from 'src/states/app/app.state';
 import { getAllReports } from 'src/services/pocketbase';
 import * as Location from 'expo-location';
 import { MarkerIcon } from './markerIcon';
+import { iconsMap } from './icons';
 
 const styles = StyleSheet.create({
   root: {
@@ -39,9 +40,13 @@ const styles = StyleSheet.create({
   },
 });
 
-interface MarkerType {
+interface EventMarkerType {
+  eventId: string;
   latitude: number;
   longitude: number;
+  icon: string;
+  title: string;
+  description: string;
 }
 
 const LIMA_LATLNG = {
@@ -52,7 +57,7 @@ const LIMA_LATLNG = {
 export default function HomeMap({ navigation }: StackProps) {
   const { dispatch, foregroundLocation, setForegroundLocation, setSelectedLocation } =
     useAppState();
-  const [markers, setMarkers] = useState<MarkerType[]>();
+  const [eventMarker, setEventMarkers] = useState<EventMarkerType[]>();
 
   const onLocationSelect = async (event: MapPressEvent) => {
     const latitude = event.nativeEvent.coordinate.latitude;
@@ -77,10 +82,12 @@ export default function HomeMap({ navigation }: StackProps) {
   useEffect(() => {
     Location.requestForegroundPermissionsAsync().then(status => {
       Location.watchPositionAsync({ accuracy: Location.Accuracy.High }, location => {
-        setForegroundLocation({
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-        });
+        dispatch(
+          setForegroundLocation({
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+          }),
+        );
       });
     });
 
@@ -89,9 +96,14 @@ export default function HomeMap({ navigation }: StackProps) {
         return {
           latitude: report.lat,
           longitude: report.lon,
-        };
+          eventId: report.id,
+          description: report.description,
+          icon: report.expand!.event_type.icon_route,
+          title: report.expand!.event_type.name,
+        } satisfies EventMarkerType;
       });
-      setMarkers(markers);
+      console.log(reports.map(r => r.expand));
+      setEventMarkers(markers);
     });
   }, []);
 
@@ -105,10 +117,18 @@ export default function HomeMap({ navigation }: StackProps) {
         provider={PROVIDER_GOOGLE}
         onPress={onLocationSelect}>
         {foregroundLocation && (
-          <Marker coordinate={foregroundLocation} title="Your Location" description="You are here!">
+          <Marker coordinate={foregroundLocation} title="Estás aquí">
             <MarkerIcon />
           </Marker>
         )}
+        {eventMarker?.map((marker, index) => (
+          <Marker key={index} coordinate={marker} title="Alerta">
+            <Image
+              source={iconsMap[marker.icon as keyof typeof iconsMap]}
+              style={{ width: 16, height: 16 }}
+            />
+          </Marker>
+        ))}
       </MapView>
     </View>
   );
