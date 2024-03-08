@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Modal, TouchableOpacity, StyleSheet } from 'react-native';
 import { pb } from 'src/services/pocketbase';
 import { getCoordinatesFromLocation } from 'src/utils/geocode';
+import { Ionicons } from '@expo/vector-icons';
 
-const RegisterPlaceModal = () => {
+export const RegisterPlaceModal = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [placeName, setPlaceName] = useState('');
   const [placeDirection, setPlaceDirection] = useState('');
@@ -43,7 +44,14 @@ const RegisterPlaceModal = () => {
         onRequestClose={() => setModalVisible(false)}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Registrar lugar</Text>
+            <View style={styles.titleContainer}>
+              <Text style={styles.modalTitle}>Registrar lugar</Text>
+              <TouchableOpacity
+                onPress={() => setModalVisible(false)}
+                style={{ paddingBottom: 20 }}>
+                <Ionicons name="close-circle" size={24} color="red" />
+              </TouchableOpacity>
+            </View>
             <Text style={styles.label}>Nombre</Text>
             <TextInput style={styles.input} value={placeName} onChangeText={setPlaceName} />
             <Text style={styles.label}>Dirección</Text>
@@ -95,6 +103,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     alignSelf: 'flex-start',
     marginBottom: 5,
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '93%',
   },
   input: {
     width: '100%',
