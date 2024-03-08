@@ -1,5 +1,10 @@
 import PocketBase from 'pocketbase';
+import eventsource from 'react-native-sse';
+// @ts-ignore
+global.EventSource = eventsource;
+
 export const pb = new PocketBase('https://dotyeison.paoloose.site');
+pb.autoCancellation(false);
 
 const sendReport = async (data: object) => {
   const res = await pb.collection('report').create(data);

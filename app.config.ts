@@ -15,11 +15,11 @@ export default ({ config: expoConfig }: ConfigContext): ExpoConfig => {
     slug = 'dotyeison';
     projectId = '7dfd2550-efeb-4d78-bef1-7cf03e0867a5';
     ios = {
-      bundleIdentifier: 'com.watarumaeda.react-native-boilerplate-dev',
+      bundleIdentifier: 'com.github.dotyeison.tombo',
       buildNumber: '1.0.0',
     };
     android = {
-      package: 'com.watarumaeda.react_native_boilerplate.dev',
+      package: 'com.github.dotyeison.tombo',
       versionCode: 1,
     };
   }
@@ -32,11 +32,11 @@ export default ({ config: expoConfig }: ConfigContext): ExpoConfig => {
     slug = 'dotyeison';
     projectId = '7dfd2550-efeb-4d78-bef1-7cf03e0867a5';
     ios = {
-      bundleIdentifier: 'com.watarumaeda.react-native-boilerplate',
+      bundleIdentifier: 'com.github.dotyeison.tombo',
       buildNumber: '1.0.0',
     };
     android = {
-      package: 'com.watarumaeda.react_native_boilerplate',
+      package: 'com.github.dotyeison.tombo',
       versionCode: 1,
     };
   }

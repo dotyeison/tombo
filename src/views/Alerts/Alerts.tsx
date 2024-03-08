@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Text, View, StyleSheet, StatusBar, ScrollView, Image } from 'react-native';
+import { Text, View, StyleSheet, StatusBar, ScrollView } from 'react-native';
 import { StackProps } from '@navigator/stack';
 import { colors } from '@theme';
 import { pb } from 'src/services/pocketbase';
-import { ListResult, RecordModel } from 'pocketbase';
 import { distanceBetweenCoordinates } from '@utils/geographic';
-import Button from '@components/Button';
+import { AlertItem, IAlertReportData } from './AlertItem';
+import ImageView from 'react-native-image-viewing';
 
 const styles = StyleSheet.create({
   root: {
@@ -21,12 +21,13 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   alertCard: {
-    borderWidth: 1.5,
+    borderWidth: 1,
+    backgroundColor: '#fafafc',
     borderColor: colors.black,
     borderRadius: 8,
-    width: '90%',
+    width: '94%',
     marginBottom: 10,
-    padding: 6,
+    padding: 12,
   },
   buttonTitle: {
     fontSize: 16,
@@ -52,7 +53,8 @@ const styles = StyleSheet.create({
 });
 
 export default function Alerts({ navigation }: StackProps) {
-  const [reports, setReports] = useState<RecordModel[]>([]);
+  const [reports, setReports] = useState<IAlertReportData[]>([]);
+  const [galleryVisible, setGalleryIsVisible] = useState({ index: 0, value: false });
 
   useEffect(() => {
     pb.collection('users')
@@ -61,9 +63,12 @@ export default function Alerts({ navigation }: StackProps) {
         const listeningLocations = await pb.collection('saved_locations').getFullList({
           filter: 'listening = true',
         });
-        const reports = await pb.collection('reports').getList();
+        const reports: IAlertReportData[] = await pb.collection('reports').getFullList({
+          expand: 'event_type',
+          sort: '-created',
+        });
         setReports(
-          reports.items.filter(report => {
+          reports.filter(report => {
             return listeningLocations.some(location => {
               const distance = distanceBetweenCoordinates(
                 {
@@ -79,43 +84,24 @@ export default function Alerts({ navigation }: StackProps) {
             });
           }),
         );
+
+        console.log('suscribing to *');
+        pb.collection('reports')
+          .subscribe('*', e => {
+            console.log({ e });
+            if (e.action === 'create') {
+              setReports([...reports, e.record as IAlertReportData]);
+            }
+          })
+          .then(() => console.log('subscribed to *'))
+          .catch(e => console.error(e, e.originalError));
+
+        return () => {
+          console.log('unsubscribing to *');
+          pb.collection('reports').unsubscribe('*');
+        };
       });
   }, []);
-
-  useEffect(() => {
-    console.log(
-      { reports },
-      reports.map(r => r.media),
-    );
-  }, [reports]);
-
-  const getTimeAgo = (date: string) => {
-    const now = new Date();
-    const created = new Date(date);
-    const diff = now.getTime() - created.getTime();
-    const seconds = Math.floor(diff / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
-    const months = Math.floor(days / 30);
-    const years = Math.floor(months / 12);
-    if (years > 0) {
-      return `Hace ${years} año${years > 1 ? 's' : ''}`;
-    }
-    if (months > 0) {
-      return `Hace ${months} mese${months > 1 ? 's' : ''}`;
-    }
-    if (days > 0) {
-      return `Hace ${days} día${days > 1 ? 's' : ''}`;
-    }
-    if (hours > 0) {
-      return `Hace ${hours} hora${hours > 1 ? 's' : ''}`;
-    }
-    if (minutes > 0) {
-      return `Hace ${minutes} minuto${minutes > 1 ? 's' : ''}`;
-    }
-    return `Hace ${seconds} segundo${seconds > 1 ? 's' : ''}`;
-  };
 
   return (
     <View style={styles.root}>
@@ -125,23 +111,17 @@ export default function Alerts({ navigation }: StackProps) {
         contentInsetAdjustmentBehavior="automatic"
         style={styles.scrollView}
         contentContainerStyle={styles.scrollViewContent}>
-        {reports.map(report => (
-          <View key={report.id} style={styles.alertCard}>
-            <Text>{getTimeAgo(report.created)}</Text>
-            <Text>{report.description}</Text>
-            <Text>{report.address_name}</Text>
-            <Text>{report.event_type}</Text>
-            <Text>{report.media}</Text>
-            {report.media.map((file: string, index: number) => (
-              <Image
-                key={index}
-                src={pb.files.getUrl(report, file)}
-                // set fixed height and variable width
-                style={{ height: 150, width: 'auto' }}
-              />
-            ))}
-            <Text>{report.lat}</Text>
-            <Text>{report.lon}</Text>
+        {reports.map((report, i) => (
+          <View key={report.id}>
+            <ImageView
+              images={report.media.map((file: string) => ({
+                uri: pb.files.getUrl(report, file),
+              }))}
+              imageIndex={galleryVisible.index}
+              visible={galleryVisible.value}
+              onRequestClose={() => setGalleryIsVisible({ index: 0, value: false })}
+            />
+            <AlertItem report={report} setGalleryIsVisible={setGalleryIsVisible} />
           </View>
         ))}
       </ScrollView>
