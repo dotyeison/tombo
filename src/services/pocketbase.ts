@@ -30,8 +30,8 @@ export const sendDevice = async (expoPushToken: string) => {
   return res;
 };
 
-export const updateDeviceCoords = async (id: string, latitude: number, longitude: number) => {
-  const res = await pb.collection('devices').update(id, { latitude, longitude });
+export const updateDeviceCoords = async (id: string, lat: number, lon: number) => {
+  const res = await pb.collection('devices').update(id, { lat, lon });
   return res;
 };
 

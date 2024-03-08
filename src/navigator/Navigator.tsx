@@ -133,18 +133,18 @@ function Navigator() {
             console.log('Error on background location task', error);
             return;
           }
-          const latitude = locations[0].coords.latitude;
-          const longitude = locations[0].coords.longitude;
+          const lat = locations[0].coords.latitude;
+          const lon = locations[0].coords.longitude;
           // save location to redux
           dispatch(
             setCurrentLocation({
-              latitude,
-              longitude,
+              latitude: lat,
+              longitude: lon,
             }),
           );
           // update device location
           if (deviceId) {
-            await pocketbase.updateDeviceCoords(deviceId, latitude, longitude);
+            await pocketbase.updateDeviceCoords(deviceId, lat, lon);
           }
         },
       );
