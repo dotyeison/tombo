@@ -62,6 +62,14 @@ export default function HomeMap({ navigation }: StackProps) {
         provider={PROVIDER_GOOGLE}
         onPress={onLocationSelect}>
         <Marker
+          description="assault"
+          coordinate={{
+            latitude: -12.062234,
+            longitude: -76.987974,
+          }}
+          image={require('@assets/images/acoso.png')}
+        />
+        <Marker
           description="Delivery person 1"
           coordinate={{
             latitude: -12.0624831,

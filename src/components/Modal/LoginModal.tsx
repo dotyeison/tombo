@@ -73,7 +73,7 @@ export const LoginModal = () => {
           <Pressable style={styles.closeButton} onPress={() => setModalVisible(false)}>
             <Image source={require('assets/images/close.png')} style={{ height: 15, width: 15 }} />
           </Pressable>
-          <Image source={require('assets/images/alert.png')} style={{ height: 70, width: 70 }} />
+          <Image source={require('assets/images/alert.png')} style={{ height: 60, width: 60 }} />
           <Text style={styles.modalTitle}>¡Bienvenid@ a Tombo!</Text>
           <Text style={styles.modalSubtitle}>{isSignUp ? 'Regístrate' : 'Inicia sesión'}</Text>
           {!isSignUp && (
