@@ -83,8 +83,8 @@ export function AlertItem({
           <Text style={{ fontSize: 14 }}>
             {reportData.address_name}{' '}
             {currentLocation?.latitude !== 0 && (
-              <Text>
-                {'(a '}
+              <Text style={{ fontWeight: '600' }}>
+                (
                 {formatDistanceAsText(
                   distanceBetweenCoordinates(
                     { lat: reportData.lat, lon: reportData.lon },

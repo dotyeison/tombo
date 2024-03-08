@@ -73,7 +73,7 @@ export default function Alerts({ navigation }: StackProps) {
   };
 
   useEffect(() => {
-    const interval = setInterval(setFilteredReports, 3000);
+    const interval = setInterval(setFilteredReports, 2000);
     return () => clearInterval(interval);
   }, []);
 

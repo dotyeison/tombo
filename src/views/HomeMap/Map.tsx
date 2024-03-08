@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, StatusBar, Image } from 'react-native';
+import { View, StyleSheet, StatusBar, Image, Text } from 'react-native';
 import { StackProps } from '@navigator/stack';
 import { colors } from '@theme';
-import MapView, { Marker, PROVIDER_GOOGLE, MapPressEvent } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_GOOGLE, MapPressEvent, Callout } from 'react-native-maps';
 import { useAppState } from 'src/states/app/app.state';
 import { getAllReports } from 'src/services/pocketbase';
 import * as Location from 'expo-location';
@@ -79,6 +79,24 @@ export default function HomeMap({ navigation }: StackProps) {
     zoom: 12,
   };
 
+  const refreshEventMarkers = async () => {
+    const reports = await getAllReports();
+    const newMarkers = reports.map(report => {
+      return {
+        latitude: report.lat,
+        longitude: report.lon,
+        eventId: report.id,
+        description: report.description,
+        icon: report.expand!.event_type.icon_route,
+        title: report.expand!.event_type.name,
+      } satisfies EventMarkerType;
+    });
+
+    if (eventMarker?.length !== newMarkers.length) {
+      setEventMarkers(newMarkers);
+    }
+  };
+
   useEffect(() => {
     Location.requestForegroundPermissionsAsync().then(status => {
       Location.watchPositionAsync({ accuracy: Location.Accuracy.High }, location => {
@@ -91,20 +109,9 @@ export default function HomeMap({ navigation }: StackProps) {
       });
     });
 
-    getAllReports().then(reports => {
-      const markers = reports.map(report => {
-        return {
-          latitude: report.lat,
-          longitude: report.lon,
-          eventId: report.id,
-          description: report.description,
-          icon: report.expand!.event_type.icon_route,
-          title: report.expand!.event_type.name,
-        } satisfies EventMarkerType;
-      });
-      console.log(reports.map(r => r.expand));
-      setEventMarkers(markers);
-    });
+    refreshEventMarkers();
+    const interval = setInterval(refreshEventMarkers, 2000);
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -123,10 +130,11 @@ export default function HomeMap({ navigation }: StackProps) {
         )}
         {eventMarker?.map((marker, index) => (
           <Marker key={index} coordinate={marker} title="Alerta">
-            <Image
-              source={iconsMap[marker.icon as keyof typeof iconsMap]}
-              style={{ width: 16, height: 16 }}
-            />
+            <Callout>
+              <View>
+                <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{marker.title}</Text>
+              </View>
+            </Callout>
           </Marker>
         ))}
       </MapView>
