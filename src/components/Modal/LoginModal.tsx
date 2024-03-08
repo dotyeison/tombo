@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     right: 10,
-    opacity: '80%',
+    opacity: 0.6,
   },
   buttonText: {
     color: 'white',
