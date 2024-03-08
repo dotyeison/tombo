@@ -9,6 +9,7 @@ const initialState: IAppState = {
   loggedIn: false,
   user: undefined,
   selectedLocation: undefined,
+  foregroundLocation: undefined,
   currentLocation: { latitude: 0, longitude: 0 },
   eventTypes: {},
   deviceId: undefined,
@@ -25,6 +26,7 @@ const slice = createSlice({
     },
     setUser: (state: IAppState, { payload }: PayloadAction<IUser>) => {
       state.user = payload;
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const { setPersistData } = useDataPersist();
       setPersistData<IUser>(DataPersistKeys.USER, {
         username: payload?.username,
@@ -42,6 +44,12 @@ const slice = createSlice({
       { payload }: PayloadAction<IAppState['currentLocation']>,
     ) => {
       state.currentLocation = payload;
+    },
+    setForegroundLocation: (
+      state: IAppState,
+      { payload }: PayloadAction<IAppState['foregroundLocation']>,
+    ) => {
+      state.foregroundLocation = payload;
     },
     setEventTypes: (state: IAppState, { payload }: PayloadAction<IAppState['eventTypes']>) => {
       state.eventTypes = payload;
