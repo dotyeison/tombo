@@ -137,14 +137,18 @@ function Navigator() {
       // register for push notifications
 
       const pushToken = await registerForPushNotificationsAsync();
+      // @ts-ignore
       dispatch(setExpoPushToken(pushToken));
 
       console.log(pushToken);
 
+      // @ts-ignore
       notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+        // @ts-ignore
         setNotification(notification);
       });
 
+      // @ts-ignore
       responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
         console.log(response);
       });
@@ -155,7 +159,9 @@ function Navigator() {
       dispatch(setLoggedIn(true));
 
       return () => {
+        // @ts-ignore
         Notifications.removeNotificationSubscription(notificationListener.current);
+        // @ts-ignore
         Notifications.removeNotificationSubscription(responseListener.current);
       };
     } catch {
