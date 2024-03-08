@@ -1,21 +1,30 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Switch } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Switch, TouchableOpacity, ScrollView } from 'react-native';
 import { RecordModel } from 'pocketbase';
+import { Ionicons } from '@expo/vector-icons';
+import SavePlaceModal from 'src/components/Modal/SavePlaceModal';
 import { pb } from 'src/services/pocketbase';
 
-interface NotificationListProps {
-  notifications: RecordModel[];
-}
+const NotificationList: React.FC = () => {
+  const [notifications, setNotifications] = useState<RecordModel[]>([]);
 
-const NotificationList: React.FC<NotificationListProps> = ({ notifications }) => {
-  const [saved, setSaved] = useState<RecordModel[]>(notifications);
+  useEffect(() => {
+    pb.collection('users')
+      .authWithPassword('paoloose', 'patito123')
+      .then(async () => {
+        const saved_locations = await pb.collection('saved_locations').getFullList();
+        console.log('notifications: ', saved_locations);
+        setNotifications(saved_locations);
+      });
+  }, [SavePlaceModal]);
+
   const updateRecord = async (listening: boolean, record_id: any) => {
     try {
       const record = await pb.collection('saved_locations').update(record_id, {
         listening: !listening,
       });
       const updatedRecord = await pb.collection('saved_locations').getFullList();
-      setSaved(updatedRecord);
+      setNotifications(updatedRecord);
       // Handle the updated record if needed
       console.log('Record updated:', record);
     } catch (error) {
@@ -24,33 +33,44 @@ const NotificationList: React.FC<NotificationListProps> = ({ notifications }) =>
     }
   };
 
+  const deleteNotification = (id: string) => {
+    setNotifications(notifications.filter(notification => notification.id !== id));
+    pb.collection('saved_locations').delete(id);
+  };
+
   return (
-    <View style={styles.container}>
-      {notifications.map((notification, index) => (
-        <View key={index} style={styles.card}>
-          <View style={styles.titleContainer}>
-            <Text style={styles.title}>{notification.custom_name}</Text>
-          </View>
-          <>
-            <Text style={styles.message}>{notification.address_name}</Text>
-            <Text style={styles.timestamp}>{notification.created}</Text>
-          </>
-          <View style={styles.bottom}>
-            <Text style={styles.bottomText}>Abrir en el mapa</Text>
-            <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-              <Text style={styles.bottomText}>Recibir alertas</Text>
-              <Switch
-                trackColor={{ true: 'grey' }}
-                thumbColor={saved[index].listening ? '#ff5757' : '#f4f3f4'}
-                ios_backgroundColor="#3e3e3e"
-                style={styles.switch}
-                value={saved[index].listening}
-                onValueChange={() => updateRecord(saved[index].listening, notification.id)}
-              />
+    <View>
+      <SavePlaceModal />
+      <ScrollView style={styles.container} contentContainerStyle={styles.scrollViewContent}>
+        {notifications.map((notification, index) => (
+          <View key={index} style={styles.card}>
+            <View style={styles.titleContainer}>
+              <Text style={styles.title}>{notification.custom_name}</Text>
+              <TouchableOpacity onPress={() => deleteNotification(notification.id)}>
+                <Ionicons name="close-circle" size={24} color="red" />
+              </TouchableOpacity>
+            </View>
+            <>
+              <Text style={styles.message}>{notification.address_name}</Text>
+              <Text style={styles.timestamp}>{notification.created}</Text>
+            </>
+            <View style={styles.bottom}>
+              <Text style={styles.bottomText}>Abrir en el mapa</Text>
+              <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                <Text style={styles.bottomText}>Recibir alertas</Text>
+                <Switch
+                  trackColor={{ true: 'grey' }}
+                  thumbColor={notification.listening ? '#ff5757' : '#f4f3f4'}
+                  ios_backgroundColor="#3e3e3e"
+                  style={styles.switch}
+                  value={notification.listening}
+                  onValueChange={() => updateRecord(notification.listening, notification.id)}
+                />
+              </View>
             </View>
           </View>
-        </View>
-      ))}
+        ))}
+      </ScrollView>
     </View>
   );
 };
@@ -58,9 +78,11 @@ const NotificationList: React.FC<NotificationListProps> = ({ notifications }) =>
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  scrollViewContent: {
     alignItems: 'center',
-    marginVertical: 20,
-    paddingBottom: 0,
+    paddingTop: '1%',
+    paddingBottom: '5%',
   },
   card: {
     minWidth: '97%',
@@ -77,7 +99,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 20,
     paddingBottom: 10,
-    marginBottom: 20,
+    marginBottom: 10,
   },
   titleContainer: {
     flexDirection: 'row',
