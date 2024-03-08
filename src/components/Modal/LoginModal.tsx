@@ -73,7 +73,7 @@ export const LoginModal = () => {
           <Pressable style={styles.closeButton} onPress={() => setModalVisible(false)}>
             <Image source={require('assets/images/close.png')} style={{ height: 15, width: 15 }} />
           </Pressable>
-          <Image source={require('assets/images/alert.png')} style={{ height: 60, width: 60 }} />
+          <Image source={require('assets/images/alert.png')} style={{ height: 50, width: 50 }} />
           <Text style={styles.modalTitle}>¡Bienvenid@ a Tombo!</Text>
           <Text style={styles.modalSubtitle}>{isSignUp ? 'Regístrate' : 'Inicia sesión'}</Text>
           {!isSignUp && (
@@ -168,6 +168,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   modalTitle: {
+    marginTop: 20,
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 10,

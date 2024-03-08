@@ -86,8 +86,11 @@ export default function Reports({ navigation }: StackProps) {
       <Text style={styles.modalTitle}>Reporte de Alerta</Text>
 
       <Text style={styles.labelInput}>Tipo de Evento</Text>
-      {/*toggle bar*/}
-
+      <StatusBar barStyle="light-content" />
+      <SelectList
+        setSelected={(value: string) => setEventType(value)}
+        data={Array.from(Object.keys(eventTypes))}
+      />
       <Text style={styles.labelInput}>Dirección</Text>
       <TextInput
         style={[styles.input, { width: '80%' }]}
@@ -104,10 +107,12 @@ export default function Reports({ navigation }: StackProps) {
       <Pressable style={styles.botonEnviar} /*onPress={}*/>
         <Text style={styles.buttonText}>ENVIAR</Text>
       </Pressable>
-      <Image
-        source={require('@assets/images/microphone.png')}
-        style={{ height: 65, width: 65, marginTop: 40 }}
-      />
+      <Pressable>
+        <Image
+          source={require('@assets/images/microphone.png')}
+          style={{ height: 65, width: 65, marginTop: 40 }}
+        />
+      </Pressable>
     </View>
   );
 }
