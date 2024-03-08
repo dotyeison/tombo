@@ -19,6 +19,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginBottom: 20,
     marginTop: 15,
+    fontWeight: '700',
   },
   buttonTitle: {
     fontSize: 16,
@@ -66,7 +67,7 @@ export default function Alerts({ navigation }: StackProps) {
               lon: location.lon,
             },
           );
-          return distance < 100; // 100 meters radius
+          return true; // 100 meters radius
         });
       }),
     );

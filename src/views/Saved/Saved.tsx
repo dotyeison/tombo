@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import React from 'react';
+import { View, StyleSheet, Text } from 'react-native';
 import { colors } from '@theme';
 import NotificationList from './NotificationList';
 import { StackProps } from '@navigator/stack';
@@ -7,6 +7,7 @@ import { StackProps } from '@navigator/stack';
 export default function SavedUbications({ navigation }: StackProps) {
   return (
     <View style={styles.root}>
+      <Text style={styles.title}>Ubicaciones guardadas</Text>
       <NotificationList />
     </View>
   );
@@ -19,5 +20,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.lightGrayPurple,
+  },
+  title: {
+    fontSize: 20,
+    marginBottom: 10,
+    marginTop: 75,
+    fontWeight: '700',
   },
 });

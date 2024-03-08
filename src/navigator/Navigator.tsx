@@ -7,7 +7,7 @@ import DrawerNavigator from './drawer';
 import { LoginModal } from '../components/Modal/LoginModal';
 import { loadImages, loadFonts } from '@theme';
 import { useDataPersist, DataPersistKeys } from '@hooks';
-import { Platform } from 'react-native';
+import { Alert, Platform } from 'react-native';
 import pocketbase from 'src/services/pocketbase';
 
 import * as Location from 'expo-location';
@@ -99,7 +99,8 @@ function Navigator() {
       const { status } = await Location.requestBackgroundPermissionsAsync();
 
       if (status !== 'granted') {
-        return alert('Permission to access location was denied');
+        Alert.alert('Permission to access location was denied');
+        throw new Error('Permission to access location was denied');
       }
 
       await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
