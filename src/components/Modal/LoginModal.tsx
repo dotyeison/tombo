@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useAppState } from '@states/app/app.state';
-import { IUser } from '@states/app/app.state.types';
 import { Alert, Modal, Image, StyleSheet, Text, TextInput, Pressable, View } from 'react-native';
 import { pb } from 'src/services/pocketbase';
 
