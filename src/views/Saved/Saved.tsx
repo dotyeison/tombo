@@ -1,8 +1,10 @@
 import React from 'react';
-import { Text, View, StyleSheet, StatusBar, Button } from 'react-native';
-import { StackProps } from '@navigator/stack';
+import { View, StyleSheet } from 'react-native';
 import { colors } from '@theme';
-import { pocketbase } from 'src/services/pocketbase';
+import NotificationList from './NotificationList';
+import pocketbase from 'src/services/pocketbase';
+import PocketBase from 'pocketbase';
+const pb = new PocketBase('https://dotyeison.paoloose.site');
 
 const styles = StyleSheet.create({
   root: {
@@ -12,46 +14,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: colors.lightGrayPurple,
   },
-  title: {
-    fontSize: 24,
-    marginBottom: 20,
-  },
-  buttonTitle: {
-    fontSize: 16,
-    color: colors.white,
-    textAlign: 'center',
-  },
-  button: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 22,
-    height: 44,
-    width: '50%',
-    backgroundColor: colors.lightPurple,
-  },
 });
 
-const data = [
-  {
-    title: 'Ant Design Title 1',
-  },
-  {
-    title: 'Ant Design Title 2',
-  },
-  {
-    title: 'Ant Design Title 3',
-  },
-  {
-    title: 'Ant Design Title 4',
-  },
-];
+const notifications = async () => {
+  const res = await pb.collection('saved_locations').authWithPassword('paoloose', 'patito123');
+  return res;
+};
 
-export default function SavedUbications({ navigation }: StackProps) {
+console.log('notifications:', notifications);
+
+export default function SavedUbications() {
   return (
     <View style={styles.root}>
-      <StatusBar barStyle="light-content" />
-      <Button onPress={() => console.log('click')} title="Click me" />
-      <Text style={styles.title}>Reportes</Text>
+      <></>
     </View>
   );
 }

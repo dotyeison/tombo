@@ -29,6 +29,7 @@
     "@react-navigation/native-stack": "^6.9.17",
     "@reduxjs/toolkit": "^1.9.7",
     "@turf/distance": "^6.5.0",
+    "antd": "^5.15.1",
     "babel-plugin-module-resolver": "^5.0.0",
     "expo": "^50.0.11",
     "expo-asset": "~9.0.2",

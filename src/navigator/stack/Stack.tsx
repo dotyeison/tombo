@@ -95,7 +95,7 @@ export function SavedStackNavigator({ navigation }: DrawerProps) {
     <Stack.Navigator screenOptions={navigationProps}>
       <Stack.Screen
         component={Saved}
-        name="AlertsStack"
+        name="SavedStack"
         options={{
           title: 'Alerts',
           headerTitle: () => <StackHeaderTitle />,
@@ -107,7 +107,7 @@ export function SavedStackNavigator({ navigation }: DrawerProps) {
         component={Details}
         name="DetailsStack"
         options={{
-          title: 'Details',
+          title: 'Saved',
           headerTitle: () => <StackHeaderTitle />,
           headerTitleAlign: 'center',
         }}

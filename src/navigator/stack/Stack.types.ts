@@ -5,6 +5,7 @@ export type StackParamList = {
   AlertsStack: undefined;
   ReportsStack: undefined;
   DetailsStack: { from: string };
+  SavedStack: undefined;
   // add more screen props...
 };
 
