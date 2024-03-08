@@ -1,3 +1,4 @@
+import { IAlertReportData } from '@views/Alerts/AlertItem';
 import PocketBase from 'pocketbase';
 import eventsource from 'react-native-sse';
 // @ts-ignore
@@ -16,21 +17,15 @@ const getEventTypes = async () => {
   return res;
 };
 
-const subscribeToReports = () => {
-  pb.collection('report').subscribe(
-    '*',
-    function (e) {
-      console.log(e.action);
-      console.log(e.record);
-    },
-    {
-      /* other options like expand, custom headers, etc. */
-    },
-  );
+export const getAllReports = async () => {
+  const reports: IAlertReportData[] = await pb.collection('reports').getFullList({
+    expand: 'event_type',
+    sort: '-created',
+  });
+  return reports;
 };
 
 export default {
   sendReport,
   getEventTypes,
-  subscribeToReports,
 };

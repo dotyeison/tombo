@@ -1,4 +1,4 @@
-package com.watarumaeda.react_native_boilerplate.dev
+package com.github.dotyeison.tombo
 
 import android.os.Build
 import android.os.Bundle

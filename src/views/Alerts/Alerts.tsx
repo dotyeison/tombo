@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Text, View, StyleSheet, StatusBar, ScrollView } from 'react-native';
 import { StackProps } from '@navigator/stack';
 import { colors } from '@theme';
-import { pb } from 'src/services/pocketbase';
+import { getAllReports, pb } from 'src/services/pocketbase';
 import { distanceBetweenCoordinates } from '@utils/geographic';
 import { AlertItem, IAlertReportData } from './AlertItem';
 import ImageView from 'react-native-image-viewing';
@@ -19,15 +19,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginBottom: 20,
     marginTop: 15,
-  },
-  alertCard: {
-    borderWidth: 1,
-    backgroundColor: '#fafafc',
-    borderColor: colors.black,
-    borderRadius: 8,
-    width: '94%',
-    marginBottom: 10,
-    padding: 12,
   },
   buttonTitle: {
     fontSize: 16,
@@ -56,51 +47,38 @@ export default function Alerts({ navigation }: StackProps) {
   const [reports, setReports] = useState<IAlertReportData[]>([]);
   const [galleryVisible, setGalleryIsVisible] = useState({ index: 0, value: false });
 
+  const setFilteredReports = async () => {
+    const listeningLocations = await pb.collection('saved_locations').getFullList({
+      filter: 'listening = true',
+    });
+    const reports = await getAllReports();
+
+    setReports(
+      reports.filter(report => {
+        return listeningLocations.some(location => {
+          const distance = distanceBetweenCoordinates(
+            {
+              lat: report.lat,
+              lon: report.lon,
+            },
+            {
+              lat: location.lat,
+              lon: location.lon,
+            },
+          );
+          return distance < 100; // 100 meters radius
+        });
+      }),
+    );
+  };
+
   useEffect(() => {
-    pb.collection('users')
-      .authWithPassword('paoloose', 'patito123')
-      .then(async () => {
-        const listeningLocations = await pb.collection('saved_locations').getFullList({
-          filter: 'listening = true',
-        });
-        const reports: IAlertReportData[] = await pb.collection('reports').getFullList({
-          expand: 'event_type',
-          sort: '-created',
-        });
-        setReports(
-          reports.filter(report => {
-            return listeningLocations.some(location => {
-              const distance = distanceBetweenCoordinates(
-                {
-                  lat: report.lat,
-                  lon: report.lon,
-                },
-                {
-                  lat: location.lat,
-                  lon: location.lon,
-                },
-              );
-              return distance < 100; // 100 meters radius
-            });
-          }),
-        );
+    const interval = setInterval(setFilteredReports, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
-        console.log('suscribing to *');
-        pb.collection('reports')
-          .subscribe('*', e => {
-            console.log({ e });
-            if (e.action === 'create') {
-              setReports([...reports, e.record as IAlertReportData]);
-            }
-          })
-          .then(() => console.log('subscribed to *'))
-          .catch(e => console.error(e, e.originalError));
-
-        return () => {
-          console.log('unsubscribing to *');
-          pb.collection('reports').unsubscribe('*');
-        };
-      });
+  useEffect(() => {
+    pb.collection('users').authWithPassword('paoloose', 'patito123').then(setFilteredReports);
   }, []);
 
   return (

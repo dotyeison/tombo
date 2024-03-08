@@ -8,24 +8,24 @@ export const LoginModal = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordConfirm, setPasswordConfirm] = useState('');
 
   useEffect(() => {
     setModalVisible(true);
   }, []);
 
   const authenticateWithPocketBase = async () => {
-    if (!isSignUp) {
-      // Register
+    if (isSignUp) {
+      // Register (sign up)
       try {
-        await pb.collection('users').create({ username, email, password });
+        await pb.collection('users').create({ username, email, password, passwordConfirm });
         Alert.alert('Registro exitoso');
       } catch (error) {
         console.error('Error during registration:', error);
         Alert.alert('Error durante el registro');
       }
     } else {
-      // Login
+      // Login (sign in)
       try {
         const authData = await pb.collection('users').authWithPassword(username, password);
         Alert.alert('Inicio de sesión exitoso');
@@ -91,7 +91,7 @@ export const LoginModal = () => {
               style={[styles.input, { width: 200 }]}
               placeholder="Confirmar Contraseña"
               secureTextEntry
-              onChangeText={text => setConfirmPassword(text)}
+              onChangeText={text => setPasswordConfirm(text)}
             />
           )}
 

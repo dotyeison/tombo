@@ -27,7 +27,7 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>com.watarumaeda.react-native-boilerplate-dev</string>
+          <string>com.github.dotyeison.tombo</string>
         </array>
       </dict>
     </array>

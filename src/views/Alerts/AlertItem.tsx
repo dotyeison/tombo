@@ -6,7 +6,7 @@ import { colors } from '@theme';
 import { RecordModel } from 'pocketbase';
 import { useAppState } from '@states/app/app.state';
 import { pb } from 'src/services/pocketbase';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 const styles = StyleSheet.create({
   alertCard: {
@@ -14,7 +14,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fafafc',
     borderColor: colors.black,
     borderRadius: 8,
+    minWidth: '94%',
     width: '94%',
+    maxWidth: '94%',
     marginBottom: 10,
     padding: 12,
   },
@@ -42,23 +44,8 @@ export function AlertItem({
   report: IAlertReportData;
   setGalleryIsVisible: (value: { index: number; value: boolean }) => void;
 }) {
-  const [reportData, setReportData] = useState<IAlertReportData>(report);
+  const [reportData, _setReportData] = useState<IAlertReportData>(report);
   const { currentLocation } = useAppState();
-
-  useEffect(() => {
-    pb.collection('reports')
-      .subscribe(report.id, e => {
-        console.log({ e });
-        if (e.action === 'update') {
-          setReportData(e.record as IAlertReportData);
-        }
-      })
-      .catch(console.error);
-
-    return () => {
-      pb.collection('reports').unsubscribe(report.id);
-    };
-  }, []);
 
   return (
     <View key={reportData.id} style={styles.alertCard}>
@@ -82,6 +69,7 @@ export function AlertItem({
             flexDirection: 'row',
             justifyContent: 'flex-start',
             backgroundColor: '#d7dde4',
+            overflow: 'hidden',
             padding: 4,
             borderRadius: 5,
             marginBottom: 8,
@@ -93,10 +81,10 @@ export function AlertItem({
             style={{ marginRight: 2 }}
           />
           <Text style={{ fontSize: 14 }}>
-            {reportData.address_name} (
-            {currentLocation?.latitude === 0 && (
+            {reportData.address_name}{' '}
+            {currentLocation?.latitude !== 0 && (
               <Text>
-                {'a '}
+                {'(a '}
                 {formatDistanceAsText(
                   distanceBetweenCoordinates(
                     { lat: reportData.lat, lon: reportData.lon },
@@ -106,10 +94,9 @@ export function AlertItem({
                     },
                   ),
                 )}
-                {' de ti'}
+                {' de ti)'}
               </Text>
             )}
-            )
           </Text>
         </View>
       </TouchableHighlight>
