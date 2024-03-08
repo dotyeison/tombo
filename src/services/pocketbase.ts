@@ -12,7 +12,7 @@ const getEventTypes = async () => {
 };
 
 const subscribeToReports = () => {
-  pb.collection('reports').subscribe(
+  pb.collection('report').subscribe(
     '*',
     function (e) {
       console.log(e.action);

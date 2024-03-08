@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Alert, Modal, Image, StyleSheet, Text, TextInput, Pressable, View } from 'react-native';
+import { pb } from 'src/services/pocketbase';
 
 export const LoginModal = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -13,18 +14,37 @@ export const LoginModal = () => {
     setModalVisible(true);
   }, []);
 
+  const authenticateWithPocketBase = async () => {
+    if (!isSignUp) {
+      // Register
+      try {
+        await pb.collection('users').create({ username, email, password });
+        Alert.alert('Registro exitoso');
+      } catch (error) {
+        console.error('Error during registration:', error);
+        Alert.alert('Error durante el registro');
+      }
+    } else {
+      // Login
+      try {
+        const authData = await pb.collection('users').authWithPassword(username, password);
+        Alert.alert('Inicio de sesión exitoso');
+        console.log('Auth Data:', authData);
+      } catch (error) {
+        console.error('Error during login:', error);
+        Alert.alert('Error durante el inicio de sesión');
+      }
+    }
+  };
+
   const handleLogin = () => {
-    Alert.alert('Inicio de sesión exitoso');
+    authenticateWithPocketBase();
     setModalVisible(false);
   };
 
   const handleRegister = () => {
-    Alert.alert('Registro exitoso');
+    authenticateWithPocketBase();
     setModalVisible(false);
-  };
-
-  const toggleSignUp = () => {
-    setIsSignUp(!isSignUp);
   };
 
   return (
