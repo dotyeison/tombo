@@ -47,6 +47,10 @@ export const LoginModal = () => {
     setModalVisible(false);
   };
 
+  const toggleSignUp = () => {
+    setIsSignUp(!isSignUp);
+  };
+
   return (
     <Modal
       animationType="slide"
@@ -93,7 +97,7 @@ export const LoginModal = () => {
 
           <Text style={styles.switchText}>
             {isSignUp ? '¿Ya tienes una cuenta? ' : '¿No tienes una cuenta? '}
-            <Pressable onPress={() => setIsSignUp(!isSignUp)}>
+            <Pressable onPress={() => toggleSignUp()}>
               <Text style={{ textDecorationLine: 'underline' }}>
                 {isSignUp ? 'Inicia sesión' : 'Regístrate'}
               </Text>
