@@ -10,7 +10,7 @@ const initialState: IAppState = {
   selectedLocation: undefined,
   currentLocation: { latitude: 0, longitude: 0 },
   eventTypes: {},
-  expoPushToken: undefined,
+  deviceId: undefined,
 };
 
 // You can think of an 'slice' as a state and the set of actions that can update that state
@@ -40,8 +40,8 @@ const slice = createSlice({
     setEventTypes: (state: IAppState, { payload }: PayloadAction<IAppState['eventTypes']>) => {
       state.eventTypes = payload;
     },
-    setExpoPushToken: (state: IAppState, { payload }: PayloadAction<string>) => {
-      state.expoPushToken = payload;
+    setDeviceId: (state: IAppState, { payload }: PayloadAction<string | undefined>) => {
+      state.deviceId = payload;
     },
     reset: () => initialState,
   },

@@ -25,7 +25,30 @@ export const getAllReports = async () => {
   return reports;
 };
 
+export const sendDevice = async (expoPushToken: string) => {
+  const res = await pb.collection('devices').create({ expoPushToken });
+  return res;
+};
+
+export const updateDeviceCoords = async (id: string, latitude: number, longitude: number) => {
+  const res = await pb.collection('devices').update(id, { latitude, longitude });
+  return res;
+};
+
+export const getDeviceByToken = async (expoPushToken: string) => {
+  const res = await pb.collection('devices').getFirstListItem(`expoPushToken="${expoPushToken}"`);
+  return res;
+};
+
+export const authAsAdmin = async () => {
+  pb.admins.authWithPassword('backend@dotyeison.com', '92429d82a41e930486c6de5ebda9602d55c39986');
+};
+
 export default {
   sendReport,
   getEventTypes,
+  sendDevice,
+  updateDeviceCoords,
+  getDeviceByToken,
+  authAsAdmin,
 };

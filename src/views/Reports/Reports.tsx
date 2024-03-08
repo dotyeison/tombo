@@ -16,7 +16,7 @@ interface Location {
 }
 
 export default function Reports({ navigation }: StackProps) {
-  const { currentLocation, eventTypes, expoPushToken } = useAppState();
+  const { currentLocation, eventTypes } = useAppState();
   const [eventType, setEventType] = useState('');
   const [location, setLocation] = useState<Location>({});
   const [description, setDescription] = useState('');

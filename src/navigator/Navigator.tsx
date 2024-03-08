@@ -61,7 +61,6 @@ async function registerForPushNotificationsAsync() {
     token = await Notifications.getExpoPushTokenAsync({
       projectId: Constants!.expoConfig!.extra!.eas.projectId,
     });
-    console.log(token);
   } else {
     alert('Must use physical device for Push Notifications');
   }
@@ -77,7 +76,8 @@ function Navigator() {
     setLoggedIn,
     setCurrentLocation,
     setEventTypes,
-    setExpoPushToken,
+    setDeviceId,
+    deviceId,
   } = useAppState();
   const { getPersistData } = useDataPersist();
 
@@ -102,9 +102,11 @@ function Navigator() {
 
       await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
         accuracy: Location.Accuracy.Balanced,
-        timeInterval: 5000,
+        timeInterval: 2000,
         distanceInterval: 0,
       });
+
+      await pocketbase.authAsAdmin();
 
       TaskManager.defineTask(
         LOCATION_TASK_NAME,
@@ -115,32 +117,42 @@ function Navigator() {
           }
           const latitude = locations[0].coords.latitude;
           const longitude = locations[0].coords.longitude;
+          // save location to redux
           dispatch(
             setCurrentLocation({
               latitude,
               longitude,
             }),
           );
+          // update device location
+          console.log({ deviceId, latitude, longitude });
+          if (deviceId) {
+            await pocketbase.updateDeviceCoords(deviceId, latitude, longitude);
+          }
         },
       );
 
-      // background task for subscribing to new reports
-      // pocketbase.subscribeToReports();
-
       const rawEventTypes = await pocketbase.getEventTypes();
+
       dispatch(
         setEventTypes(
           rawEventTypes.items.reduce((acc, item) => ({ ...acc, [item.name]: item.id }), {}),
         ),
       );
 
-      // register for push notifications
-
+      // register device with expo push notification token
       const pushToken = await registerForPushNotificationsAsync();
+      console.log({ pushToken });
       // @ts-ignore
-      dispatch(setExpoPushToken(pushToken));
-
-      console.log(pushToken);
+      let device;
+      try {
+        device = await pocketbase.sendDevice(pushToken);
+      } catch (error) {
+        console.log('Device already registered, finding device by token');
+        device = await pocketbase.getDeviceByToken(pushToken);
+      } finally {
+        dispatch(setDeviceId(device?.id));
+      }
 
       // @ts-ignore
       notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
@@ -164,8 +176,8 @@ function Navigator() {
         // @ts-ignore
         Notifications.removeNotificationSubscription(responseListener.current);
       };
-    } catch {
-      console.log('[##] no user found in cache');
+    } catch (error) {
+      console.log({ error });
       dispatch(setLoggedIn(false));
     } finally {
       SplashScreen.hideAsync();
