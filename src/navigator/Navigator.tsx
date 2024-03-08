@@ -62,10 +62,10 @@ async function registerForPushNotificationsAsync() {
       projectId: Constants!.expoConfig!.extra!.eas.projectId,
     });
   } else {
-    alert('Must use physical device for Push Notifications');
+    // alert('Must use physical device for Push Notifications');
   }
 
-  return token!.data;
+  return token?.data;
 }
 
 function Navigator() {
@@ -76,6 +76,7 @@ function Navigator() {
     setLoggedIn,
     loggedIn,
     setCurrentLocation,
+    setForegroundLocation,
     setEventTypes,
     setDeviceId,
     deviceId,
@@ -109,6 +110,21 @@ function Navigator() {
 
       await pocketbase.authAsAdmin();
 
+      try {
+        await Location.requestForegroundPermissionsAsync();
+        const location = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.High,
+        });
+        dispatch(
+          setForegroundLocation({
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+          }),
+        );
+      } catch (foregroundLocationError) {
+        console.log({ foregroundLocationError });
+      }
+
       TaskManager.defineTask(
         LOCATION_TASK_NAME,
         async ({ data: { locations }, error }: TaskManagerArgs) => {
@@ -126,7 +142,6 @@ function Navigator() {
             }),
           );
           // update device location
-          console.log({ deviceId, latitude, longitude });
           if (deviceId) {
             await pocketbase.updateDeviceCoords(deviceId, latitude, longitude);
           }
@@ -146,13 +161,15 @@ function Navigator() {
       console.log({ pushToken });
       // @ts-ignore
       let device;
-      try {
-        device = await pocketbase.sendDevice(pushToken);
-      } catch (error) {
-        console.log('Device already registered, finding device by token');
-        device = await pocketbase.getDeviceByToken(pushToken);
-      } finally {
-        dispatch(setDeviceId(device?.id));
+      if (pushToken) {
+        try {
+          device = await pocketbase.sendDevice(pushToken);
+        } catch {
+          console.log('Device already registered, finding device by token');
+          device = await pocketbase.getDeviceByToken(pushToken);
+        } finally {
+          dispatch(setDeviceId(device?.id));
+        }
       }
 
       // @ts-ignore
@@ -192,7 +209,10 @@ function Navigator() {
 
   return (
     isUserChecked && (
-      <NavigationContainer>{loggedIn ? <DrawerNavigator /> : <LoginModal />}</NavigationContainer>
+      <NavigationContainer>
+        {!loggedIn && <LoginModal />}
+        <DrawerNavigator />
+      </NavigationContainer>
     )
   );
 }

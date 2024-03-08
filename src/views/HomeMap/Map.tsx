@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, StatusBar } from 'react-native';
 import { StackProps } from '@navigator/stack';
 import { colors } from '@theme';
 import MapView, { Marker, PROVIDER_GOOGLE, MapPressEvent } from 'react-native-maps';
 import { useAppState } from 'src/states/app/app.state';
-// import reverseGeocode from '@utils/reverseGeocode';
+import { getAllReports } from 'src/services/pocketbase';
+import * as Location from 'expo-location';
+import { MarkerIcon } from './markerIcon';
 
 const styles = StyleSheet.create({
   root: {
@@ -37,13 +39,24 @@ const styles = StyleSheet.create({
   },
 });
 
+interface MarkerType {
+  latitude: number;
+  longitude: number;
+}
+
+const LIMA_LATLNG = {
+  latitude: -12.0624831,
+  longitude: -76.9901451,
+};
+
 export default function HomeMap({ navigation }: StackProps) {
-  const { dispatch, setSelectedLocation } = useAppState();
+  const { dispatch, foregroundLocation, setForegroundLocation, setSelectedLocation } =
+    useAppState();
+  const [markers, setMarkers] = useState<MarkerType[]>();
 
   const onLocationSelect = async (event: MapPressEvent) => {
     const latitude = event.nativeEvent.coordinate.latitude;
     const longitude = event.nativeEvent.coordinate.longitude;
-    // const place_name = await reverseGeocode({ latitude, longitude });
 
     dispatch(
       setSelectedLocation({
@@ -53,30 +66,49 @@ export default function HomeMap({ navigation }: StackProps) {
     );
   };
 
+  const initialCamera = {
+    center: foregroundLocation ?? LIMA_LATLNG,
+    pitch: 0,
+    heading: 0,
+    altitude: 1000,
+    zoom: 12,
+  };
+
+  useEffect(() => {
+    Location.requestForegroundPermissionsAsync().then(status => {
+      Location.watchPositionAsync({ accuracy: Location.Accuracy.High }, location => {
+        setForegroundLocation({
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+        });
+      });
+    });
+
+    getAllReports().then(reports => {
+      const markers = reports.map(report => {
+        return {
+          latitude: report.lat,
+          longitude: report.lon,
+        };
+      });
+      setMarkers(markers);
+    });
+  }, []);
+
   return (
     <View style={styles.root}>
       <StatusBar barStyle="light-content" />
       <MapView
         style={styles.map}
         mapType="standard"
+        initialCamera={initialCamera}
         provider={PROVIDER_GOOGLE}
         onPress={onLocationSelect}>
-        <Marker
-          description="assault"
-          coordinate={{
-            latitude: -12.062234,
-            longitude: -76.987974,
-          }}
-          image={require('@assets/images/acoso.png')}
-        />
-        <Marker
-          description="Delivery person 1"
-          coordinate={{
-            latitude: -12.0624831,
-            longitude: -76.9901451,
-          }}
-          image={require('@assets/images/gun.png')}
-        />
+        {foregroundLocation && (
+          <Marker coordinate={foregroundLocation} title="Your Location" description="You are here!">
+            <MarkerIcon />
+          </Marker>
+        )}
       </MapView>
     </View>
   );
